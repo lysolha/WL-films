@@ -1,11 +1,18 @@
-import { RouterProvider } from 'react-router-dom';
-import { router } from './assets/routes';
+import { Provider } from 'react-redux';
+import { Outlet } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { SessionGuard } from './components/SessionGuard';
+import store from './store/store';
 
 function App() {
   return (
-    <div className="max-w-screen-xl mx-auto px-4 py-10">
-      <RouterProvider router={router} />
-    </div>
+    <Provider store={store}>
+      <div className="max-w-screen-xl mx-auto px-4 py-10">
+        <SessionGuard />
+        <Outlet />
+        <ToastContainer position="bottom-right" autoClose={3000} />
+      </div>
+    </Provider>
   );
 }
 
