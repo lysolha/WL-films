@@ -34,9 +34,11 @@ const Dialog = ({ open, onClose, children }: DialogProps) => {
   return (
     <dialog
       ref={ref}
-      className="min-w-[600px] m-auto min-h-[400px] bg-white rounded-md p-4"
+      className="min-w-[600px] m-auto min-h-[400px] bg-cream border border-charcoal-dark rounded-md p-4 "
     >
-      {children}
+      <div className="flex flex-col gap-2 p-4 border border-charcoal-dark rounded-md min-h-[400px]">
+        {children}
+      </div>
     </dialog>
   );
 };

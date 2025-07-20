@@ -28,7 +28,7 @@ const initialState: FilmState = {
   currentPage: 1,
   totalPages: 0,
   totalItems: 0,
-  itemsPerPage: 10,
+  itemsPerPage: 9,
 };
 
 const filmSlice = createSlice({

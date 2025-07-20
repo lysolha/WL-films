@@ -18,7 +18,7 @@ const Input = ({ label, icon, onClick, ...props }: InputProps) => {
           type="text"
           {...field}
           {...props}
-          className={`w-full h-10 text-lg bg-cream/30 border border-cream text-charcoal-dark rounded-md p-2 hover:bg-cream/50 focus:bg-cream/50 focus:border-cream focus:border-2 focus-visible:outline-none transition-all duration-200 ${
+          className={`w-full h-10 text-lg bg-charcoal border border-cream text-cream rounded-md p-2 hover:bg-charcoal-dark focus:bg-charcoal-dark focus:border-cream focus:border-2 focus-visible:outline-none transition-all duration-200 ${
             meta.touched && meta.error ? 'border-error' : ''
           }`}
         />

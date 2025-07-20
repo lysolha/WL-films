@@ -19,22 +19,26 @@ const CreateFilms = () => {
   const { token } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
 
+  const handleBack = () => {
+    navigate('/dashboard');
+  };
+
   const handleCreateFilm = async (film: FormFilm) => {
     if (!token) return;
     try {
-      await dispatch(createFilm({ film, token })).unwrap();
-      navigate('/');
+      await dispatch(createFilm({ film, token }));
+      handleBack();
       toast.success('Film created successfully');
     } catch (error) {
       toast.error(`Film created failed: ${error}`);
     }
   };
 
-  const handleImportFilms = async (file: File) => {
-    if (!token) return;
+  const handleImportFilms = async (file: File | null) => {
+    if (!token || !file) return;
     try {
-      await dispatch(importFilms({ file, token })).unwrap();
-      navigate('/');
+      await dispatch(importFilms({ file, token }));
+      handleBack();
       toast.success('Films imported successfully');
     } catch (error) {
       toast.error(`Films imported failed: ${error}`);
@@ -44,7 +48,7 @@ const CreateFilms = () => {
   return (
     <div>
       <div className="flex justify-between items-center">
-        <Button onClick={() => navigate('/')}>Back</Button>
+        <Button onClick={handleBack}>Back</Button>
         <h1 className="text-2xl font-bold">Create film</h1>
         <Button onClick={() => setOpen(true)}>Import films</Button>
       </div>

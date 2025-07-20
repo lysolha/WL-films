@@ -4,8 +4,9 @@ import { toast } from 'react-toastify';
 import * as Yup from 'yup';
 import type { RootState } from '../../store/store';
 import Button from '../ui/Button';
+import SearchIcon from '../ui/icons/SearchIcon';
 import Input from '../ui/Input';
-import SearchIcon from '../ui/searchIcon';
+import Select from '../ui/Select';
 
 interface SearchFormValues {
   search: string;
@@ -48,7 +49,7 @@ const SearchForm = ({ onSearch }: SearchFormProps) => {
   ];
 
   return (
-    <div className="my-4">
+    <div className="mt-4 mb-10">
       <Formik
         initialValues={{
           search: '',
@@ -67,29 +68,19 @@ const SearchForm = ({ onSearch }: SearchFormProps) => {
         {({ values, setFieldValue }) => (
           <Form className="flex items-center gap-2">
             <Input name="search" label="" placeholder="Search" />
-            <select
+            <Select
+              name="sort"
               value={values.sort}
               onChange={(e) => setFieldValue('sort', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              {sortOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-            <select
+              options={sortOptions}
+            />
+            <Select
+              name="order"
               value={values.order}
               onChange={(e) => setFieldValue('order', e.target.value)}
-              className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               disabled={!values.sort}
-            >
-              {orderOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+              options={orderOptions}
+            />
             <Button type="submit">
               <SearchIcon />
             </Button>

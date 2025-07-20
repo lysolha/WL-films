@@ -1,4 +1,6 @@
 import Button from './Button';
+import ArrowIcon from './icons/ArrowIcon';
+import Select from './Select';
 
 interface PaginationProps {
   currentPage: number;
@@ -17,6 +19,13 @@ const Pagination = ({
   totalItems,
   onItemsPerPageChange,
 }: PaginationProps) => {
+  const itemsPerPageOptions = [
+    { label: '3', value: '3' },
+    { label: '9', value: '9' },
+    { label: '18', value: '18' },
+    { label: '27', value: '27' },
+  ];
+
   const handlePrevious = () => {
     if (currentPage > 1) {
       onPageChange(currentPage - 1);
@@ -51,32 +60,23 @@ const Pagination = ({
     return pages;
   };
 
-  // if (totalPages <= 1) {
-  //   return null;
-  // }
-
   const pageNumbers = getPageNumbers();
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 px-4 py-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-      <div className="flex items-center gap-2 text-sm text-gray-700">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 my-6 px-4 py-3 bg-charcoal border border-cream rounded-lg shadow-sm">
+      <div className="flex items-center gap-2 text-cream">
         <span>Show</span>
-        <select
+        <Select
           value={itemsPerPage}
           onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-          className="px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        >
-          <option value={5}>5</option>
-          <option value={10}>10</option>
-          <option value={20}>20</option>
-          <option value={50}>50</option>
-        </select>
+          options={itemsPerPageOptions}
+        />
         <span>per page</span>
       </div>
 
-      <div className="text-sm text-gray-700">
+      <div>
         Showing {startItem}-{endItem} of {totalItems} items
       </div>
 
@@ -84,22 +84,20 @@ const Pagination = ({
         <Button
           onClick={handlePrevious}
           disabled={currentPage === 1}
-          className="px-3 py-2 text-sm"
+          className="px-3 py-2 rotate-180"
         >
-          Previous
+          <ArrowIcon />
         </Button>
 
         {pageNumbers[0] > 1 && (
           <>
             <Button
               onClick={() => handlePageClick(1)}
-              className={`px-3 py-2 text-sm ${currentPage === 1 ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 border border-gray-300'}`}
+              className={`px-3 py-2 ${currentPage === 1 ? 'bg-charcoal-dark text-white' : 'bg-charcoal text-cream border border-gray-300 hover:bg-gray-50'}`}
             >
               1
             </Button>
-            {pageNumbers[0] > 2 && (
-              <span className="px-2 text-gray-500">...</span>
-            )}
+            {pageNumbers[0] > 2 && <span className="px-2">...</span>}
           </>
         )}
 
@@ -107,10 +105,10 @@ const Pagination = ({
           <Button
             key={page}
             onClick={() => handlePageClick(page)}
-            className={`px-3 py-2 text-sm ${
+            className={`px-3 py-2 ${
               currentPage === page
-                ? 'bg-blue-500 text-white'
-                : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'
+                ? 'bg-charcoal-dark text-white'
+                : 'bg-charcoal text-cream border border-gray-300 hover:bg-gray-50'
             }`}
           >
             {page}
@@ -120,13 +118,13 @@ const Pagination = ({
         {pageNumbers[pageNumbers.length - 1] < totalPages && (
           <>
             {pageNumbers[pageNumbers.length - 1] < totalPages - 1 && (
-              <span className="px-2 text-gray-500">...</span>
+              <span className="px-2">...</span>
             )}
             <Button
               onClick={() => handlePageClick(totalPages)}
-              className={`px-3 py-2 text-sm ${
+              className={`px-3 py-2 ${
                 currentPage === totalPages
-                  ? 'bg-blue-500 text-white'
+                  ? 'bg-charcoal-dark text-white'
                   : 'bg-white text-gray-700 border border-gray-300'
               }`}
             >
@@ -138,9 +136,9 @@ const Pagination = ({
         <Button
           onClick={handleNext}
           disabled={currentPage === totalPages}
-          className="px-3 py-2 text-sm"
+          className="px-3 py-2"
         >
-          Next
+          <ArrowIcon />
         </Button>
       </div>
     </div>

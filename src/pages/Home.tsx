@@ -1,11 +1,7 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import FilmList from '../components/Film/List';
-import SearchForm from '../components/Forms/SearchForm';
-import Button from '../components/ui/Button';
-import Pagination from '../components/ui/Pagination';
+
 import {
   deleteFilm,
   getAllFilms,
@@ -13,6 +9,16 @@ import {
 import { setCurrentPage, setItemsPerPage } from '../store/slices/filmSlice';
 import { logout } from '../store/slices/userSlice';
 import type { AppDispatch, RootState } from '../store/store';
+
+import { toast } from 'react-toastify';
+
+import FilmList from '../components/Film/List';
+import SearchForm from '../components/Forms/SearchForm';
+import Button from '../components/ui/Button';
+import Confirmation from '../components/ui/Confirmation';
+import Pagination from '../components/ui/Pagination';
+import Dialog from '../components/ui/dialog';
+import type { Film } from '../types/Film';
 
 const Home = () => {
   const { token } = useSelector((state: RootState) => state.user);
@@ -26,6 +32,8 @@ const Home = () => {
   } = useSelector((state: RootState) => state.film);
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const [content, setContent] = useState('');
 
   const handleLogout = () => {
     dispatch(logout());
@@ -51,7 +59,7 @@ const Home = () => {
           limit: itemsPerPage,
           offset,
         })
-      ).unwrap();
+      );
     } catch (error) {
       toast.error((error as { code?: string }).code || 'Failed to get films');
     }
@@ -60,11 +68,13 @@ const Home = () => {
   const handleDeleteAllFilms = async () => {
     if (!token) return;
     try {
-      for (const film of allFilms) {
-        await dispatch(deleteFilm({ id: film.id, token })).unwrap();
-      }
-      getList(1); // Reset to first page after deleting all
+      const response = await dispatch(getAllFilms({ token })).unwrap();
+      const films = response.data;
+      await Promise.all(
+        films.map((film: Film) => dispatch(deleteFilm({ id: film.id, token })))
+      );
       toast.success('All films deleted successfully');
+      getList();
     } catch (error) {
       toast.error(`All films deleted failed: ${error}`);
     }
@@ -77,23 +87,35 @@ const Home = () => {
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     dispatch(setItemsPerPage(newItemsPerPage));
-    getList(1); // Reset to first page when changing items per page
+  };
+
+  const showConfirmation = (content: string) => {
+    setOpen(true);
+    setContent(content);
   };
 
   useEffect(() => {
     if (!token) {
       handleLogout();
     } else {
+      console.log('currentPage', currentPage);
       getList();
     }
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   return (
     <div>
       <div className="flex justify-between gap-2">
-        <Button onClick={handleDeleteAllFilms}>Delete all films</Button>
         <Button onClick={handleLogout}>Logout</Button>
-        <Button onClick={() => navigate('/create-film')}>Create film</Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => showConfirmation('Delete all films?')}
+            disabled={allFilms.length === 0}
+          >
+            Delete all films
+          </Button>
+          <Button onClick={() => navigate('/create-film')}>Create film</Button>
+        </div>
       </div>
       <SearchForm onSearch={getList} />
       <Pagination
@@ -105,6 +127,14 @@ const Home = () => {
         onItemsPerPageChange={handleItemsPerPageChange}
       />
       <FilmList allFilms={allFilms} isLoading={isLoading} />
+
+      <Dialog open={open} onClose={() => setOpen(false)}>
+        <Confirmation
+          onConfirm={handleDeleteAllFilms}
+          onCancel={() => setOpen(false)}
+          content={content}
+        />
+      </Dialog>
     </div>
   );
 };

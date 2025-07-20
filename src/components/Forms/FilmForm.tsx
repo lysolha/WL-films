@@ -1,8 +1,10 @@
 import { FieldArray, Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import type { Film, FormFilm } from '../../types/Film';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import Select from '../ui/Select';
+import DeleteIcon from '../ui/icons/DeleteIcon';
+import filmSchema from './validationSchemas/filmSchema';
 
 interface FilmFormProps {
   film?: Film;
@@ -14,55 +16,57 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
     id: film?.id || '',
     title: film?.title || '',
     year: film?.year || 0,
-    format: film?.format || '',
+    format: film?.format || 'DVD',
     actors: film?.actors.map((actor) => actor.name) || [],
   };
 
+  const formatOptions = [
+    { label: 'DVD', value: 'DVD' },
+    { label: 'VHS', value: 'VHS' },
+  ];
+
   return (
-    <>
-      <h1>Film Form</h1>
+    <div className="flex flex-col gap-2 mt-4">
       <Formik
         initialValues={initialValues}
-        validationSchema={Yup.object({
-          title: Yup.string().max(30, 'Must be 30 characters or less'),
-          year: Yup.number().min(1900, 'Must be greater than 1900'),
-          format: Yup.string().max(10, 'Must be 10 characters or less'),
-          list: Yup.array().of(
-            Yup.string().max(30, 'Must be 30 characters or less')
-          ),
-        })}
+        validationSchema={filmSchema}
         onSubmit={(values) => {
           onSubmit(values);
         }}
-        onReset={(values) => {
-          console.log(values);
-        }}
       >
-        {({ values, dirty, isValid }) => (
+        {({ values, dirty, isValid, setFieldValue }) => (
           <Form className="flex flex-col gap-2">
             <Input name="title" label="Title" placeholder="Title" />
             <Input name="year" label="Year" placeholder="Year" type="number" />
-            <Input name="format" label="Format" placeholder="Format" />
+            <Select
+              name="format"
+              value={values.format}
+              onChange={(e) => setFieldValue('format', e.target.value)}
+              options={formatOptions}
+            />
             <FieldArray
               name="actors"
               render={({ push, remove }) => (
-                <ul className="flex flex-col gap-2">
-                  {values.actors.map((_, index) => (
-                    <li key={index} className="flex gap-2 items-center">
-                      <Input
-                        name={`actors[${index}]`}
-                        label="Actor"
-                        placeholder="Actor"
-                      />
-                      <Button type="button" onClick={() => remove(index)}>
-                        Delete
-                      </Button>
-                    </li>
-                  ))}
-                  <Button type="button" onClick={() => push('')}>
-                    Add Actor
-                  </Button>
-                </ul>
+                <div>
+                  <h2 className="text-lg font-bold">Actors</h2>
+                  <ul className="flex flex-col gap-2 ml-6">
+                    {values.actors.map((_, index) => (
+                      <li key={index} className="flex gap-2 items-end">
+                        <Input
+                          name={`actors[${index}]`}
+                          label="Actor"
+                          placeholder="Actor"
+                        />
+                        <Button type="button" onClick={() => remove(index)}>
+                          <DeleteIcon />
+                        </Button>
+                      </li>
+                    ))}
+                    <Button type="button" onClick={() => push('')}>
+                      Add Actor
+                    </Button>
+                  </ul>
+                </div>
               )}
             />
 
@@ -81,7 +85,7 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
           </Form>
         )}
       </Formik>
-    </>
+    </div>
   );
 };
 
