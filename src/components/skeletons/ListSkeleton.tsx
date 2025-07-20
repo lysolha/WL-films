@@ -1,8 +1,11 @@
+import CardSkeleton from './CardSkeleton';
+
 const ListSkeleton = () => {
   return (
-    <div>
-      <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse" />
-      <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse" />
+    <div className="grid grid-cols-3 gap-8">
+      <CardSkeleton />
+      <CardSkeleton />
+      <CardSkeleton />
     </div>
   );
 };
