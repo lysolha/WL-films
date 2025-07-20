@@ -6,7 +6,7 @@ import Input from './ui/Input';
 
 const SearchForm = () => {
   return (
-    <>
+    <div className="my-4">
       <Formik
         initialValues={{
           search: '',
@@ -26,7 +26,7 @@ const SearchForm = () => {
           </Button>
         </Form>
       </Formik>
-    </>
+    </div>
   );
 };
 

@@ -14,27 +14,7 @@ export const router = createBrowserRouter([
       { path: 'auth', element: <Auth /> },
       { path: '', element: <Home /> },
       { path: 'create-film', element: <CreateFilms /> },
-      { path: 'film-info', element: <FilmInfo /> },
+      { path: 'film-info/:id', element: <FilmInfo /> },
     ],
   },
-  // {
-  //   path: '/',
-  //   element: <Home />,
-  // },
-  // {
-  //   path: '/auth',
-  //   element: <Auth />,
-  // },
-  // {
-  //   path: '/create-film',
-  //   element: <CreateFilms />,
-  // },
-  // {
-  //   path: '/film-info',
-  //   element: <FilmInfo />,
-  // },
-  // {
-  //   path: '*',
-  //   element: <Navigate to="/" />,
-  // },
 ]);
