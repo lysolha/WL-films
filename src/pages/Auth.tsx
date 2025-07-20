@@ -1,45 +1,36 @@
 import { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import AuthForm from '../components/Forms/AuthForm';
+
 import { createUser, loginUser } from '../store/extraReducers/userExtraReduсer';
 import type { AppDispatch } from '../store/store';
 
+import { toast } from 'react-toastify';
+
+import AuthForm from '../components/Forms/AuthForm';
+import {
+  loginSchema,
+  registerSchema,
+} from '../components/Forms/validationSchemas/authSchems';
+
 const Auth = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
+
   const [method, setMethod] = useState<'login' | 'register'>('login');
-  const [validationSchema, setValidationSchema] = useState(Yup.object({}));
+  const [validationSchema, setValidationSchema] = useState(loginSchema);
   const registerRef = useRef<HTMLAnchorElement>(null);
   const loginRef = useRef<HTMLAnchorElement>(null);
+
   const handleMethodChange = (method: 'login' | 'register') => {
     setMethod(method);
     if (method === 'register') {
-      setValidationSchema(
-        Yup.object({
-          name: Yup.string().required('Required'),
-          email: Yup.string().email('Invalid email').required('Required'),
-          password: Yup.string()
-            .required('Required')
-            .min(8, 'Password must be at least 8 characters long'),
-          confirmPassword: Yup.string()
-            .required('Required')
-            .oneOf([Yup.ref('password')], 'Passwords must match'),
-        })
-      );
+      setValidationSchema(registerSchema);
     } else {
-      setValidationSchema(
-        Yup.object({
-          email: Yup.string().email('Invalid email').required('Required'),
-          password: Yup.string()
-            .min(8, 'Password must be at least 8 characters long')
-            .required('Required'),
-        })
-      );
+      setValidationSchema(loginSchema);
     }
   };
-  const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+
   const handleSubmit = async (values: {
     email: string;
     password: string;
@@ -48,7 +39,7 @@ const Auth = () => {
   }) => {
     if (method === 'register') {
       try {
-        const token = await dispatch(
+        await dispatch(
           createUser({
             name: values.name || '',
             email: values.email,
@@ -56,20 +47,16 @@ const Auth = () => {
             confirmPassword: values.confirmPassword || '',
           })
         ).unwrap();
-        if (token) {
-          navigate('/dashboard');
-          toast.success('Registered successfully');
-        }
+        navigate('/dashboard');
+        toast.success('Registered successfully');
       } catch (error) {
         toast.error((error as { code?: string }).code || 'Registration failed');
       }
     } else {
       try {
-        const token = await dispatch(loginUser(values)).unwrap();
-        if (token) {
-          navigate('/dashboard');
-          toast.success('Logged in successfully');
-        }
+        await dispatch(loginUser(values)).unwrap();
+        navigate('/dashboard');
+        toast.success('Logged in successfully');
       } catch (error) {
         toast.error((error as { code?: string }).code || 'Login failed');
       }
@@ -83,8 +70,9 @@ const Auth = () => {
   return (
     <div className="flex flex-col items-center justify-center">
       <div className="w-1/2 min-h-1/2 border border-gray-300 rounded-md p-4 shadow-md">
-        <h1 className="text-2xl font-bold text-center mb-4">Films editor</h1>
-        <h2 className="text-center mb-4"> {method}</h2>
+        <h1 className="text-3xl font-bold text-center my-8 font-header">
+          Welcome to Films editor
+        </h1>
 
         <AuthForm
           key={method}
@@ -92,26 +80,30 @@ const Auth = () => {
           validationSchema={validationSchema}
           handleSubmit={handleSubmit}
         />
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center mt-4">
           <a
             ref={registerRef}
             href="#"
-            className={`text-blue-500 ${
-              method === 'register' ? 'text-red-500' : 'text-blue-500'
+            className={`${
+              method === 'register'
+                ? 'text-cream underline font-bold'
+                : 'text-fresh-light'
             }`}
             onClick={() => setMethod('register')}
           >
-            Register
+            Sign up
           </a>
           <a
             ref={loginRef}
             href="#"
-            className={`text-blue-500 ${
-              method === 'login' ? 'text-red-500' : 'text-blue-500'
+            className={`${
+              method === 'login'
+                ? 'text-cream underline font-bold'
+                : 'text-fresh-light'
             }`}
             onClick={() => setMethod('login')}
           >
-            Login
+            Log in
           </a>
         </div>
       </div>

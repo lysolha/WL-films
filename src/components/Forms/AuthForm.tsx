@@ -37,10 +37,11 @@ const AuthForm = ({
       onSubmit={(values) => {
         handleSubmit(values);
       }}
-      validateOnBlur={true}
       validateOnChange={true}
+      validateOnBlur={true}
+      validateOnMount={false}
     >
-      {({ dirty, isValid }) => (
+      {({ dirty }) => (
         <Form className="flex flex-col gap-4 items-center justify-center">
           <Input
             name="name"
@@ -91,7 +92,7 @@ const AuthForm = ({
             }
             onClick={() => setShowPassword(!showPassword)}
           />
-          <Button type="submit" disabled={!dirty || !isValid}>
+          <Button type="submit" disabled={!dirty}>
             Submit
           </Button>
         </Form>
