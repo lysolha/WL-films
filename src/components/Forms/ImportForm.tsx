@@ -13,30 +13,44 @@ const ImportForm = ({
   };
   return (
     <>
-      <h1>Import form</h1>
-      <p>
+      <h2 className="text-2xl font-bold text-center text-charcoal-dark">
+        Import Films
+      </h2>
+      <p className="text-sm text-charcoal-dark">
         Upload a txt file containing film data
-        <Button onClick={() => console.log('download template')}>
-          Download template
-        </Button>
       </p>
+      <a
+        href="/sample_movies.txt"
+        download
+        className="px-4 py-2 bg-fresh text-white rounded text-sm text-center w-full"
+      >
+        template.txt
+      </a>
       <Formik
         initialValues={initialValues}
         validationSchema={Yup.object({
-          file: Yup.mixed().required('File is required'),
+          file: Yup.mixed()
+            .required('File is required')
+            .test('fileType', 'Only .txt files are allowed', (value) => {
+              if (!value) return false;
+              if (value instanceof File) {
+                return (
+                  value.type === 'text/plain' || value.name.endsWith('.txt')
+                );
+              }
+              return false;
+            }),
         })}
         onSubmit={(values) => {
-          console.log('values', values);
           handleImportFilms(values.file);
         }}
-        onReset={(values) => {
-          console.log(values);
-        }}
       >
-        {() => (
-          <Form className="flex flex-col gap-2">
+        {({ dirty }) => (
+          <Form className="flex flex-col gap-2 h-full justify-between flex-grow">
             <FileDragAndDropField name="file" />
-            <Button type="submit">Import</Button>
+            <Button type="submit" className="mt-auto w-full" disabled={!dirty}>
+              Import
+            </Button>
           </Form>
         )}
       </Formik>
