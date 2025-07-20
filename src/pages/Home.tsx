@@ -90,7 +90,7 @@ const Home = () => {
 
   return (
     <div>
-      <div className="flex justify-between gap-2 bg-sky-950">
+      <div className="flex justify-between gap-2">
         <Button onClick={handleDeleteAllFilms}>Delete all films</Button>
         <Button onClick={handleLogout}>Logout</Button>
         <Button onClick={() => navigate('/create-film')}>Create film</Button>

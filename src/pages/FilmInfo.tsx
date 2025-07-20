@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import FilmForm from '../components/Forms/FilmForm';
 import Button from '../components/ui/Button';
+import DeleteIcon from '../components/ui/DeleteIcon';
 import Dialog from '../components/ui/dialog';
 import {
   deleteFilm,
@@ -68,7 +69,9 @@ const FilmInfo = () => {
     <div>
       <Button onClick={() => navigate('/dashboard')}>Back</Button>
       <Button onClick={() => setOpen(true)}>Edit</Button>
-      <Button onClick={() => handleDeleteFilm(film?.id || '')}>Delete</Button>
+      <Button onClick={() => handleDeleteFilm(film?.id || '')}>
+        <DeleteIcon />
+      </Button>
       <h1>{film?.title}</h1>
       <p>{film?.year}</p>
       <p>{film?.format}</p>
