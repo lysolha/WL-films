@@ -11,12 +11,13 @@ interface FilmFormProps {
 
 const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
   const initialValues = {
+    id: film?.id || '',
     title: film?.title || '',
-    year: film?.year || '',
-    rating: film?.rating || '',
+    year: film?.year || 0,
     format: film?.format || '',
-    list: film?.list || [''],
+    actors: film?.actors.map((actor) => actor.name) || [],
   };
+
   return (
     <>
       <h1>Film Form</h1>
@@ -25,7 +26,6 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
         validationSchema={Yup.object({
           title: Yup.string().max(30, 'Must be 30 characters or less'),
           year: Yup.number().min(1900, 'Must be greater than 1900'),
-          rating: Yup.number().min(0, 'Must be greater than 0'),
           format: Yup.string().max(10, 'Must be 10 characters or less'),
           list: Yup.array().of(
             Yup.string().max(30, 'Must be 30 characters or less')
@@ -41,17 +41,16 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
         {({ values, dirty, isValid }) => (
           <Form className="flex flex-col gap-2">
             <Input name="title" label="Title" placeholder="Title" />
-            <Input name="year" label="Year" placeholder="Year" />
-            <Input name="rating" label="Rating" placeholder="Rating" />
+            <Input name="year" label="Year" placeholder="Year" type="number" />
             <Input name="format" label="Format" placeholder="Format" />
             <FieldArray
-              name="list"
+              name="actors"
               render={({ push, remove }) => (
                 <ul className="flex flex-col gap-2">
-                  {values.list.map((_, index) => (
+                  {values.actors.map((_, index) => (
                     <li key={index} className="flex gap-2 items-center">
                       <Input
-                        name={`list[${index}]`}
+                        name={`actors[${index}]`}
                         label="Actor"
                         placeholder="Actor"
                       />

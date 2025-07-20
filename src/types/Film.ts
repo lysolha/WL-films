@@ -1,16 +1,19 @@
 export type Film = {
   id: string;
   title: string;
-  year: string;
-  rating: string;
+  year: number;
   format: string;
-  list: string[];
+  actors: Actor[];
 };
 
 export type FormFilm = {
   title: string;
-  year: string;
-  rating: string;
+  year: number;
   format: string;
-  list: string[];
+  actors: string[];
+};
+
+export type Actor = {
+  id: string;
+  name: string;
 };

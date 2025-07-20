@@ -9,7 +9,6 @@ const FilmCard = ({ film }: { film: Film }) => {
     >
       <div className="text-lg font-bold">{film.title}</div>
       <div className="text-sm text-gray-500">{film.year}</div>
-      <div className="text-sm text-gray-500">{film.rating}</div>
     </Link>
   );
 };

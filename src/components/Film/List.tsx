@@ -1,9 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { getAllFilms } from '../../store/extraReducers/filmExtraReducer';
+import {
+  deleteFilm,
+  getAllFilms,
+} from '../../store/extraReducers/filmExtraReducer';
 import type { AppDispatch, RootState } from '../../store/store';
 import ListSkeleton from '../skeletons/ListSkeleton';
+import Button from '../ui/Button';
 import FilmCard from './FilmCard';
 
 const FilmList = () => {
@@ -15,10 +19,21 @@ const FilmList = () => {
     if (!token) return;
     try {
       await dispatch(getAllFilms(token)).unwrap();
-      console.log('allFilms', allFilms);
-      toast.success('Films fetched successfully');
     } catch (error) {
       toast.error((error as { code?: string }).code || 'Failed to get films');
+    }
+  };
+
+  const handleDeleteAllFilms = async () => {
+    if (!token) return;
+    try {
+      for (const film of allFilms) {
+        await dispatch(deleteFilm({ id: film.id, token })).unwrap();
+      }
+      dispatch(getAllFilms(token));
+      toast.success('All films deleted successfully');
+    } catch (error) {
+      toast.error(`All films deleted failed: ${error}`);
     }
   };
 
@@ -34,6 +49,7 @@ const FilmList = () => {
 
   return (
     <div className="flex flex-col gap-2">
+      <Button onClick={handleDeleteAllFilms}>Delete all films</Button>
       <div className="grid grid-cols-3 gap-2">
         {allFilms && allFilms.length > 0 ? (
           allFilms.map((film) => <FilmCard key={film.id} film={film} />)

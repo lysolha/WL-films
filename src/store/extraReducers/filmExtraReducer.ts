@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import type { Film, FilmForm } from '../../types/Film';
+import type { FormFilm } from '../../types/Film';
 import * as FilmAPI from '../APIs/filmAPI';
 
 export const getFilmById = createAsyncThunk(
@@ -17,39 +17,43 @@ export const getFilmById = createAsyncThunk(
 
 export const createFilm = createAsyncThunk(
   'film/createFilm',
-  async (film: FilmForm) => {
-    const response = await fetch('http://localhost:8000/api/v1/movies', {
-      method: 'POST',
-      body: JSON.stringify(film),
-    });
-    const data = await response.json();
-    return data.data;
+  async ({ film, token }: { film: FormFilm; token: string }, thunkAPI) => {
+    const response = await FilmAPI.createFilm(film, token);
+
+    if (response.status === 0) {
+      return thunkAPI.rejectWithValue(response.error);
+    }
+
+    return response.data;
   }
 );
 
 export const deleteFilm = createAsyncThunk(
   'film/deleteFilm',
-  async (id: string) => {
-    const response = await fetch(`http://localhost:8000/api/v1/movies/${id}`, {
-      method: 'DELETE',
-    });
-    const data = await response.json();
-    return data.data;
+  async ({ id, token }: { id: string; token: string }, thunkAPI) => {
+    const response = await FilmAPI.deleteFilm(id, token);
+
+    if (response.status === 0) {
+      return thunkAPI.rejectWithValue(response.error);
+    }
+
+    return response;
   }
 );
 
 export const updateFilm = createAsyncThunk(
   'film/updateFilm',
-  async (film: Film) => {
-    const response = await fetch(
-      `http://localhost:8000/api/v1/movies/${film.id}`,
-      {
-        method: 'PATCH',
-        body: JSON.stringify(film),
-      }
-    );
-    const data = await response.json();
-    return data.data;
+  async (
+    { film, token, id }: { film: FormFilm; token: string; id: string },
+    thunkAPI
+  ) => {
+    const response = await FilmAPI.updateFilm(film, token, id);
+
+    if (response.status === 0) {
+      return thunkAPI.rejectWithValue(response.error);
+    }
+
+    return response.data;
   }
 );
 
@@ -66,8 +70,15 @@ export const getAllFilms = createAsyncThunk(
   }
 );
 
-export const importFilms = createAsyncThunk('film/importFilms', async () => {
-  const response = await fetch('http://localhost:8000/api/v1/movies/import');
-  const data = await response.json();
-  return data.data;
-});
+export const importFilms = createAsyncThunk(
+  'film/importFilms',
+  async ({ file, token }: { file: File; token: string }, thunkAPI) => {
+    const response = await FilmAPI.importFilms(file, token);
+
+    if (response.status === 0) {
+      return thunkAPI.rejectWithValue(response.error);
+    }
+
+    return response.data;
+  }
+);

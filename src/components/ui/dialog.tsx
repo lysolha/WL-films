@@ -19,7 +19,6 @@ const Dialog = ({ open, onClose, children }: DialogProps) => {
     }
 
     const handleOutsideClick = (e: MouseEvent) => {
-      console.log('handleOutsideClick', e.target, ref.current);
       if (e.target === ref.current) onClose();
     };
 
