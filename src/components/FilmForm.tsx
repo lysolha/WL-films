@@ -1,14 +1,15 @@
 import { FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import type { Film } from '../types/Film';
+import type { Film, FormFilm } from '../types/Film';
 import Button from './ui/Button';
 import Input from './ui/Input';
 
 interface FilmFormProps {
   film?: Film;
+  onSubmit: (values: FormFilm) => void;
 }
 
-const FilmForm = ({ film }: FilmFormProps) => {
+const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
   const initialValues = {
     title: film?.title || '',
     year: film?.year || '',
@@ -31,8 +32,7 @@ const FilmForm = ({ film }: FilmFormProps) => {
           ),
         })}
         onSubmit={(values) => {
-          // save film
-          console.log(values);
+          onSubmit(values);
         }}
         onReset={(values) => {
           console.log(values);

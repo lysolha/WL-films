@@ -23,7 +23,9 @@ const Dialog = ({ open, onClose, children }: DialogProps) => {
       if (e.target === ref.current) onClose();
     };
 
-    document.addEventListener('mousedown', handleOutsideClick);
+    if (open) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
 
     return () => {
       document.removeEventListener('mousedown', handleOutsideClick);
