@@ -10,13 +10,45 @@ export const getFilmById = async (id: string, token: string) => {
   return data;
 };
 
-export const getAllFilms = async (token: string) => {
-  const response = await fetch('http://localhost:8000/api/v1/movies', {
+export const getAllFilms = async (
+  token: string,
+  search?: string,
+  sort?: string,
+  order?: string,
+  limit?: number,
+  offset?: number
+) => {
+  const queryParams = new URLSearchParams();
+
+  if (search) {
+    queryParams.append('search', search);
+  }
+
+  if (sort) {
+    queryParams.append('sort', sort);
+  }
+
+  if (order) {
+    queryParams.append('order', order);
+  }
+
+  if (limit) {
+    queryParams.append('limit', limit.toString());
+  }
+
+  if (offset) {
+    queryParams.append('offset', offset.toString());
+  }
+
+  const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
+  console.log('query', query);
+  const response = await fetch(`http://localhost:8000/api/v1/movies${query}`, {
     headers: {
       Authorization: `${token}`,
     },
   });
   const data = await response.json();
+  console.log('all films', data);
   return data;
 };
 

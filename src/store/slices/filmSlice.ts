@@ -14,6 +14,10 @@ interface FilmState {
   film: Film | null;
   isLoading: boolean;
   error: string | null;
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
 }
 
 const initialState: FilmState = {
@@ -21,6 +25,10 @@ const initialState: FilmState = {
   film: null,
   isLoading: false,
   error: null,
+  currentPage: 1,
+  totalPages: 0,
+  totalItems: 0,
+  itemsPerPage: 10,
 };
 
 const filmSlice = createSlice({
@@ -29,6 +37,13 @@ const filmSlice = createSlice({
   reducers: {
     setAllFilms: (state, action) => {
       state.allFilms = action.payload;
+    },
+    setCurrentPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+    setItemsPerPage: (state, action) => {
+      state.itemsPerPage = action.payload;
+      state.currentPage = 1; // Reset to first page when changing items per page
     },
   },
   extraReducers: (builder) => {
@@ -52,8 +67,10 @@ const filmSlice = createSlice({
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(getAllFilms.fulfilled, (state, action) => {
-        console.log('action.payload', action.payload);
-        state.allFilms = action.payload;
+        console.log('slice:', action);
+        state.allFilms = action.payload.data;
+        state.totalItems = action.payload.meta.total;
+        state.totalPages = Math.ceil(state.totalItems / state.itemsPerPage);
         state.isLoading = false;
       })
       .addCase(createFilm.pending, (state) => {
@@ -107,5 +124,6 @@ const filmSlice = createSlice({
   },
 });
 
-export const { setAllFilms } = filmSlice.actions;
+export const { setAllFilms, setCurrentPage, setItemsPerPage } =
+  filmSlice.actions;
 export default filmSlice.reducer;

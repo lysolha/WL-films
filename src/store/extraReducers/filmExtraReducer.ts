@@ -59,14 +59,39 @@ export const updateFilm = createAsyncThunk(
 
 export const getAllFilms = createAsyncThunk(
   'film/getAllFilms',
-  async (token: string, thunkAPI) => {
-    const response = await FilmAPI.getAllFilms(token);
+  async (
+    {
+      token,
+      search,
+      sort,
+      order,
+      limit,
+      offset,
+    }: {
+      token: string;
+      search?: string;
+      sort?: string;
+      order?: string;
+      limit?: number;
+      offset?: number;
+    },
+    thunkAPI
+  ) => {
+    const response = await FilmAPI.getAllFilms(
+      token,
+      search || '',
+      sort || '',
+      order || '',
+      limit,
+      offset
+    );
 
     if (response.status === 0) {
       return thunkAPI.rejectWithValue(response.error);
     }
 
-    return response.data;
+    console.log('extra reducer', response);
+    return response;
   }
 );
 
