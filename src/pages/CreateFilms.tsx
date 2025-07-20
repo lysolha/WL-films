@@ -47,10 +47,19 @@ const CreateFilms = () => {
 
   return (
     <div>
-      <div className="flex justify-between items-center">
-        <Button onClick={handleBack}>Back</Button>
-        <h1 className="text-2xl font-bold">Create film</h1>
-        <Button onClick={() => setOpen(true)}>Import films</Button>
+      <div className="grid grid-cols-2 lg:grid-cols-3 justify-between items-center gap-2">
+        <Button onClick={handleBack} className="col-span-1 col-start-1">
+          Back
+        </Button>
+        <h1 className="text-2xl font-bold col-span-2 lg:col-start-1">
+          Create film
+        </h1>
+        <Button
+          onClick={() => setOpen(true)}
+          className="col-span-1 col-start-3 row-start-1"
+        >
+          Import films
+        </Button>
       </div>
       <FilmForm onSubmit={handleCreateFilm} />
       <Dialog open={open} onClose={() => setOpen(false)}>

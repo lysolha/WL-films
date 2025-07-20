@@ -69,7 +69,7 @@ const Auth = () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <div className="w-1/2 min-h-1/2 border border-gray-300 rounded-md p-4 shadow-md">
+      <div className="w-full min-h-1/2 border border-gray-300 rounded-md p-4 shadow-md lg:w-1/2">
         <h1 className="text-3xl font-bold text-center my-8 font-header">
           Welcome to Films editor
         </h1>

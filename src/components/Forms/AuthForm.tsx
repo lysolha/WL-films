@@ -1,9 +1,9 @@
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import EyeIcon from '../../assets/icons/eye-svgrepo-com.svg';
 import Button from '../ui/Button';
 import Input from '../ui/Input';
+import EyeIcon from '../ui/icons/EyeIcon';
 
 interface AuthFormProps {
   method: 'login' | 'register';
@@ -56,19 +56,7 @@ const AuthForm = ({
             label="Password"
             placeholder="Password"
             type={showPassword ? 'text' : 'password'}
-            icon={
-              showPassword ? (
-                <img width={20} height={20} src={EyeIcon} alt="Show password" />
-              ) : (
-                <img
-                  width={20}
-                  height={20}
-                  src={EyeIcon}
-                  alt="Show password"
-                  className="opacity-50"
-                />
-              )
-            }
+            icon={<EyeIcon className={`${!showPassword && 'opacity-50'}`} />}
             onClick={() => setShowPassword(!showPassword)}
           />
           <Input
@@ -77,19 +65,7 @@ const AuthForm = ({
             placeholder="Confirm Password"
             disabled={method === 'login'}
             className={method === 'login' ? 'hidden' : ''}
-            icon={
-              showPassword ? (
-                <img width={20} height={20} src={EyeIcon} alt="Show password" />
-              ) : (
-                <img
-                  width={20}
-                  height={20}
-                  src={EyeIcon}
-                  alt="Show password"
-                  className="opacity-50"
-                />
-              )
-            }
+            icon={<EyeIcon className={`${!showPassword && 'opacity-50'}`} />}
             onClick={() => setShowPassword(!showPassword)}
           />
           <Button type="submit" disabled={!dirty}>

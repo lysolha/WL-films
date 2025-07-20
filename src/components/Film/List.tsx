@@ -13,7 +13,7 @@ const FilmList = ({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="grid grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {allFilms && allFilms.length > 0 ? (
           allFilms.map((film) => <FilmCard key={film.id} film={film} />)
         ) : (

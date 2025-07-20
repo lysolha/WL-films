@@ -66,7 +66,7 @@ const SearchForm = ({ onSearch }: SearchFormProps) => {
         }}
       >
         {({ values, setFieldValue }) => (
-          <Form className="flex items-center gap-2">
+          <Form className="flex items-center gap-2 lg:flex-row flex-col">
             <Input name="search" label="" placeholder="Search" />
             <Select
               name="sort"
@@ -81,7 +81,10 @@ const SearchForm = ({ onSearch }: SearchFormProps) => {
               disabled={!values.sort}
               options={orderOptions}
             />
-            <Button type="submit">
+            <Button
+              type="submit"
+              className="w-full lg:w-auto flex justify-center items-center"
+            >
               <SearchIcon />
             </Button>
           </Form>
