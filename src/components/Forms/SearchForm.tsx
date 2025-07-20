@@ -2,10 +2,10 @@ import { Form, Formik } from 'formik';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import SearchIcon from '../assets/icons/magnifying-glass-svgrepo-com.svg';
-import type { RootState } from '../store/store';
-import Button from './ui/Button';
-import Input from './ui/Input';
+import SearchIcon from '../../assets/icons/magnifying-glass-svgrepo-com.svg';
+import type { RootState } from '../../store/store';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
 
 interface SearchFormValues {
   search: string;

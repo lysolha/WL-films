@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import FilmList from '../components/Film/List';
-import SearchForm from '../components/SearchForm';
+import SearchForm from '../components/Forms/SearchForm';
 import Button from '../components/ui/Button';
 import Pagination from '../components/ui/Pagination';
 import {

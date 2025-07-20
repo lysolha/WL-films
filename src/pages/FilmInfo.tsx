@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import FilmForm from '../components/FilmForm';
+import FilmForm from '../components/Forms/FilmForm';
 import Button from '../components/ui/Button';
 import Dialog from '../components/ui/dialog';
 import {
@@ -29,7 +29,7 @@ const FilmInfo = () => {
         console.log(response);
       } catch (error) {
         console.error(error);
-        navigate('/');
+        navigate('/dashboard');
       }
     } else {
       navigate('/auth');
@@ -40,8 +40,8 @@ const FilmInfo = () => {
     if (!token || !id) return;
     try {
       await dispatch(deleteFilm({ id, token })).unwrap();
-      navigate('/');
-      dispatch(getAllFilms(token));
+      navigate('/dashboard');
+      dispatch(getAllFilms({ token }));
       toast.success('Film deleted successfully');
     } catch (error) {
       toast.error(`Film deleted failed: ${error}`);
@@ -66,7 +66,7 @@ const FilmInfo = () => {
 
   return (
     <div>
-      <Button onClick={() => navigate('/')}>Back</Button>
+      <Button onClick={() => navigate('/dashboard')}>Back</Button>
       <Button onClick={() => setOpen(true)}>Edit</Button>
       <Button onClick={() => handleDeleteFilm(film?.id || '')}>Delete</Button>
       <h1>{film?.title}</h1>

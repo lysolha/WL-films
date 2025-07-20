@@ -1,9 +1,9 @@
 import { Form, Formik } from 'formik';
 import { useState } from 'react';
 import * as Yup from 'yup';
-import EyeIcon from '../assets/icons/eye-svgrepo-com.svg';
-import Button from './ui/Button';
-import Input from './ui/Input';
+import EyeIcon from '../../assets/icons/eye-svgrepo-com.svg';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
 
 interface AuthFormProps {
   method: 'login' | 'register';
@@ -35,7 +35,6 @@ const AuthForm = ({
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={(values) => {
-        console.log(values);
         handleSubmit(values);
       }}
       validateOnBlur={true}

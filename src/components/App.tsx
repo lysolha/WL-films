@@ -1,8 +1,8 @@
 import { Provider } from 'react-redux';
 import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import { SessionGuard } from './components/SessionGuard';
-import store from './store/store';
+import store from '../store/store';
+import { SessionGuard } from './SessionGuard';
 
 function App() {
   return (

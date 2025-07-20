@@ -1,7 +1,7 @@
 import { Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import FileDragAndDropField from './FileDragAndDropField';
-import Button from './ui/Button';
+import Button from '../ui/Button';
+import FileDragAndDropField from '../ui/FileDragAndDropField';
 
 const ImportForm = ({
   handleImportFilms,

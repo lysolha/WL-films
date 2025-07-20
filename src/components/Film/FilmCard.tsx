@@ -4,7 +4,7 @@ import type { Film } from '../../types/Film';
 const FilmCard = ({ film }: { film: Film }) => {
   return (
     <Link
-      to={`film-info/${film.id}`}
+      to={`/film-info/${film.id}`}
       className="flex flex-col gap-2 border border-gray-300 rounded-md p-4 text-center"
     >
       <div className="text-lg font-bold">{film.title}</div>

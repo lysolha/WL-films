@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import FilmForm from '../components/FilmForm';
-import ImportForm from '../components/ImportForm';
+import FilmForm from '../components/Forms/FilmForm';
+import ImportForm from '../components/Forms/ImportForm';
 import Button from '../components/ui/Button';
 import Dialog from '../components/ui/dialog';
 import {

@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as Yup from 'yup';
-import AuthForm from '../components/AuthForm';
+import AuthForm from '../components/Forms/AuthForm';
 import { createUser, loginUser } from '../store/extraReducers/userExtraReduсer';
 import type { AppDispatch } from '../store/store';
 
@@ -57,7 +57,7 @@ const Auth = () => {
           })
         ).unwrap();
         if (token) {
-          navigate('/');
+          navigate('/dashboard');
           toast.success('Registered successfully');
         }
       } catch (error) {
@@ -67,7 +67,7 @@ const Auth = () => {
       try {
         const token = await dispatch(loginUser(values)).unwrap();
         if (token) {
-          navigate('/');
+          navigate('/dashboard');
           toast.success('Logged in successfully');
         }
       } catch (error) {

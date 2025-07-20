@@ -1,8 +1,8 @@
 import { FieldArray, Form, Formik } from 'formik';
 import * as Yup from 'yup';
-import type { Film, FormFilm } from '../types/Film';
-import Button from './ui/Button';
-import Input from './ui/Input';
+import type { Film, FormFilm } from '../../types/Film';
+import Button from '../ui/Button';
+import Input from '../ui/Input';
 
 interface FilmFormProps {
   film?: Film;

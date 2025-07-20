@@ -1,6 +1,6 @@
 import { useField } from 'formik';
 import { useEffect, useRef } from 'react';
-import Button from './ui/Button';
+import Button from './Button';
 
 const FileDragAndDropField = ({ name }: { name: string }) => {
   const [field, , helpers] = useField<File | null>(name);
