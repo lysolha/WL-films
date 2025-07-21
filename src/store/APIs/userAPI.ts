@@ -1,5 +1,7 @@
+const API_URL = import.meta.env.VITE_API_URL;
+
 export async function login(data: { email: string; password: string }) {
-  const response = await fetch('http://localhost:8000/api/v1/sessions', {
+  const response = await fetch(`${API_URL}/sessions`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
@@ -13,7 +15,7 @@ export async function createUser(data: {
   password: string;
   confirmPassword: string;
 }) {
-  const response = await fetch('http://localhost:8000/api/v1/users', {
+  const response = await fetch(`${API_URL}/users`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),

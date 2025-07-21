@@ -1,7 +1,9 @@
 import type { FormFilm } from '../../types/Film';
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 export const getFilmById = async (id: string, token: string) => {
-  const response = await fetch(`http://localhost:8000/api/v1/movies/${id}`, {
+  const response = await fetch(`${API_URL}/movies/${id}`, {
     headers: {
       Authorization: `${token}`,
     },
@@ -42,7 +44,7 @@ export const getAllFilms = async (
 
   const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
   console.log('query', query);
-  const response = await fetch(`http://localhost:8000/api/v1/movies${query}`, {
+  const response = await fetch(`${API_URL}/movies${query}`, {
     headers: {
       Authorization: `${token}`,
     },
@@ -53,7 +55,7 @@ export const getAllFilms = async (
 };
 
 export const createFilm = async (film: FormFilm, token: string) => {
-  const response = await fetch('http://localhost:8000/api/v1/movies', {
+  const response = await fetch(`${API_URL}/movies`, {
     method: 'POST',
     body: JSON.stringify(film),
     headers: {
@@ -66,7 +68,7 @@ export const createFilm = async (film: FormFilm, token: string) => {
 };
 
 export const updateFilm = async (film: FormFilm, token: string, id: string) => {
-  const response = await fetch(`http://localhost:8000/api/v1/movies/${id}`, {
+  const response = await fetch(`${API_URL}/movies/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(film),
     headers: {
@@ -79,7 +81,7 @@ export const updateFilm = async (film: FormFilm, token: string, id: string) => {
 };
 
 export const deleteFilm = async (id: string, token: string) => {
-  const response = await fetch(`http://localhost:8000/api/v1/movies/${id}`, {
+  const response = await fetch(`${API_URL}/movies/${id}`, {
     method: 'DELETE',
     headers: {
       Authorization: `${token}`,
@@ -96,7 +98,7 @@ export const importFilms = async (file: File, token: string) => {
   const formData = new FormData();
   formData.append('movies', file);
 
-  const response = await fetch('http://localhost:8000/api/v1/movies/import', {
+  const response = await fetch(`${API_URL}/movies/import`, {
     method: 'POST',
     headers: {
       Authorization: `${token}`,
