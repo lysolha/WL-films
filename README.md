@@ -76,6 +76,7 @@ Before running this project, you need to start the required backend Docker conta
 https://hub.docker.com/r/webbylabhub/movies
 
 Please copy the url to your backend for next step.
+Example url after project running via instructions: API_URL=http://localhost:8000/api/v1  
 
 ### Running the Project with Docker
 
@@ -83,5 +84,6 @@ Please copy the url to your backend for next step.
 docker pull rdnvol/movies
 docker run --name movies -d -p 3000:3000 -e API_URL={your-backend-url} rdnvol/movies
 ```
+Example url after project running via instructions: http://localhost:3000  
 
 This will start the movies backend service on port 8080. You can access it at: https://hub.docker.com/r/rdnvol/movies
