@@ -82,6 +82,9 @@ const FilmInfo = () => {
         <h1 className="text-3xl font-bold text-center font-header uppercase">
           {film?.title}
         </h1>
+        <h2 className="text-lg">
+          <strong>ID:</strong> {film?.id}
+        </h2>
         <p className="text-lg">
           <strong>YEAR:</strong> {film?.year}
         </p>
