@@ -36,15 +36,15 @@ export default tseslint.config([
       // other options...
     },
   },
-])
+]);
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
 
 export default tseslint.config([
   globalIgnores(['dist']),
@@ -65,5 +65,23 @@ export default tseslint.config([
       // other options...
     },
   },
-])
+]);
 ```
+
+## Docker setup
+
+### Prerequisites
+
+Before running this project, you need to start the required backend Docker container:
+https://hub.docker.com/r/webbylabhub/movies
+
+Please copy the url to your backend for next step.
+
+### Running the Project with Docker
+
+```bash
+docker pull rdnvol/movies
+docker run --name movies -d -p 3000:3000 -e API_URL={your-backend-url} rdnvol/movies
+```
+
+This will start the movies backend service on port 8080. You can access it at: https://hub.docker.com/r/rdnvol/movies
