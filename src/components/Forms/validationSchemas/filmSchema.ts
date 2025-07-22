@@ -2,6 +2,7 @@ import * as Yup from 'yup';
 
 const filmSchema = Yup.object({
   title: Yup.string()
+    .transform((value) => value.trim())
     .max(30, 'Must be 30 characters or less')
     .required('Title is required'),
   year: Yup.number()
@@ -13,6 +14,7 @@ const filmSchema = Yup.object({
     .required('Format is required'),
   actors: Yup.array().of(
     Yup.string()
+      .transform((value) => value.trim())
       .max(30, 'Must be 30 characters or less')
       .required('Actor is required')
   ),
