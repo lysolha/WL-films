@@ -1,96 +1,73 @@
-import { Form, Formik } from 'formik';
-import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import * as Yup from 'yup';
-import type { RootState } from '../../store/store';
-import Button from '../ui/Button';
-import SearchIcon from '../ui/icons/SearchIcon';
+import { Formik } from 'formik';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { Form } from 'react-router-dom';
+import { SearchContext } from '../../pages/Home';
 import Input from '../ui/Input';
-import Select from '../ui/Select';
+import { searchSchema } from './validationSchemas/searchSchema';
 
-interface SearchFormValues {
-  search: string;
-  sort: string;
-  order: string;
-}
+const SearchForm = () => {
+  const searchContext = useContext(SearchContext);
+  const [searchPlaceholder, setSearchPlaceholder] = useState('');
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-interface SearchFormProps {
-  onSearch: (
-    page?: number,
-    search?: string,
-    sort?: string,
-    order?: string
-  ) => Promise<void>;
-}
+  if (!searchContext) {
+    throw new Error('SearchForm must be used within SearchContext.Provider');
+  }
 
-const SearchForm = ({ onSearch }: SearchFormProps) => {
-  const { token } = useSelector((state: RootState) => state.user);
+  const { setSearch, search } = searchContext;
 
-  const handleSearch = async (values: SearchFormValues) => {
-    if (!token) return;
-    try {
-      await onSearch(1, values.search, values.sort, values.order); // Reset to page 1 when searching
-    } catch (error) {
-      toast.error(`Films search failed: ${error}`);
-    }
+  useEffect(() => {
+    setSearchPlaceholder(search);
+  }, [search]);
+
+  const debouncedSetSearch = useCallback(
+    (value: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        if (value.length >= 2) {
+          setSearch(value);
+        } else if (value.length === 0) {
+          setSearch('');
+        }
+      }, 1000);
+    },
+    [setSearch]
+  );
+
+  const handleSearch = (value: string) => {
+    debouncedSetSearch(value);
   };
 
-  const sortOptions = [
-    { value: '', label: 'No sorting' },
-    { value: 'title', label: 'Title' },
-    { value: 'year', label: 'Year' },
-    { value: 'id', label: 'Created' },
-  ];
-
-  const orderOptions = [
-    { value: '', label: 'Select Order' },
-    { value: 'ASC', label: 'Ascending' },
-    { value: 'DESC', label: 'Descending' },
-  ];
-
   return (
-    <div className="mt-4 mb-10">
-      <Formik
-        initialValues={{
-          search: '',
-          sort: '',
-          order: '',
-        }}
-        validationSchema={Yup.object({
-          search: Yup.string().max(30, 'Must be 30 characters or less'),
-          sort: Yup.string(),
-          order: Yup.string(),
-        })}
-        onSubmit={(values) => {
-          handleSearch(values);
-        }}
-      >
-        {({ values, setFieldValue }) => (
-          <Form className="flex items-center gap-2 lg:flex-row flex-col">
-            <Input name="search" label="" placeholder="Search" />
-            <Select
-              name="sort"
-              value={values.sort}
-              onChange={(e) => setFieldValue('sort', e.target.value)}
-              options={sortOptions}
-            />
-            <Select
-              name="order"
-              value={values.order}
-              onChange={(e) => setFieldValue('order', e.target.value)}
-              disabled={!values.sort}
-              options={orderOptions}
-            />
-            <Button
-              type="submit"
-              className="w-full lg:w-auto flex justify-center items-center"
-            >
-              <SearchIcon />
-            </Button>
-          </Form>
+    <Formik
+      initialValues={{
+        search: '',
+      }}
+      validationSchema={searchSchema}
+      onSubmit={() => {}}
+    >
+      <Form className="flex flex-col gap-1 my-4">
+        <Input
+          name="search"
+          label=""
+          placeholder="Search"
+          onChange={(e) => {
+            const currentValue = e.target.value;
+            setSearchPlaceholder(currentValue);
+            handleSearch(currentValue.trim());
+          }}
+          value={searchPlaceholder}
+        />
+        {searchPlaceholder.length < 2 && (
+          <p className="text-sm text-gray-500">
+            enter at least 2 characters to search
+          </p>
         )}
-      </Formik>
-    </div>
+      </Form>
+    </Formik>
   );
 };
 

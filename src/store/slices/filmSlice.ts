@@ -67,11 +67,14 @@ const filmSlice = createSlice({
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(getAllFilms.fulfilled, (state, action) => {
-        console.log('slice:', action);
         state.allFilms = action.payload.data;
         state.totalItems = action.payload.meta.total;
         state.totalPages = Math.ceil(state.totalItems / state.itemsPerPage);
         state.isLoading = false;
+
+        if (state.totalPages < state.currentPage) {
+          state.currentPage = 1;
+        }
       })
       .addCase(createFilm.pending, (state) => {
         state.isLoading = true;

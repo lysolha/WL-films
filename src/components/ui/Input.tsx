@@ -6,18 +6,13 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   icon?: React.ReactNode;
   onClick?: () => void;
+  className?: string;
 }
 
 const Input = ({ label, icon, onClick, ...props }: InputProps) => {
   const [field, meta] = useField(props);
   return (
-    <div
-      className={twMerge(
-        'w-full',
-        props.className,
-        label ? 'flex flex-col gap-2' : ''
-      )}
-    >
+    <div className={twMerge('w-full', props.className)}>
       <label htmlFor={props.id}>{label}</label>
       <div className="relative">
         <input

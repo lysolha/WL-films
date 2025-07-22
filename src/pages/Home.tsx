@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -13,12 +13,25 @@ import type { AppDispatch, RootState } from '../store/store';
 import { toast } from 'react-toastify';
 
 import FilmList from '../components/Film/List';
+import Filter from '../components/Filter';
 import SearchForm from '../components/Forms/SearchForm';
 import Button from '../components/ui/Button';
 import Confirmation from '../components/ui/Confirmation';
 import Pagination from '../components/ui/Pagination';
 import Dialog from '../components/ui/dialog';
 import type { Film } from '../types/Film';
+
+interface SearchContextType {
+  search: string;
+  setSearch: (search: string) => void;
+  sort: string;
+  setSort: (sort: string) => void;
+  order: string;
+  setOrder: (order: string) => void;
+}
+export const SearchContext = createContext<SearchContextType | undefined>(
+  undefined
+);
 
 const Home = () => {
   const { token } = useSelector((state: RootState) => state.user);
@@ -35,27 +48,36 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [content, setContent] = useState('');
 
+  const [search, setSearch] = useState<string>('');
+  const [sort, setSort] = useState<string>('');
+  const [order, setOrder] = useState<string>('');
+
   const handleLogout = () => {
     dispatch(logout());
     localStorage.removeItem('session');
     navigate('/auth');
   };
 
-  const getList = async (
+  const getList = async ({
     page = currentPage,
-    search = '',
-    sort = '',
-    order = ''
-  ) => {
+    querySearch = search,
+    querySort = sort,
+    queryOrder = order,
+  }: {
+    page?: number;
+    querySearch?: string;
+    querySort?: string;
+    queryOrder?: string;
+  }) => {
     if (!token) return;
     try {
       const offset = (page - 1) * itemsPerPage;
       await dispatch(
         getAllFilms({
           token,
-          search,
-          sort,
-          order,
+          search: querySearch,
+          sort: querySort,
+          order: queryOrder,
           limit: itemsPerPage,
           offset,
         })
@@ -74,7 +96,7 @@ const Home = () => {
         films.map((film: Film) => dispatch(deleteFilm({ id: film.id, token })))
       );
       toast.success('All films deleted successfully');
-      getList();
+      getList({});
     } catch (error) {
       toast.error(`All films deleted failed: ${error}`);
     }
@@ -82,7 +104,7 @@ const Home = () => {
 
   const handlePageChange = (page: number) => {
     dispatch(setCurrentPage(page));
-    getList(page);
+    getList({ page });
   };
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
@@ -94,14 +116,20 @@ const Home = () => {
     setContent(content);
   };
 
+  const handleResetQueries = () => {
+    setSearch('');
+    setSort('');
+    setOrder('');
+  };
+
   useEffect(() => {
     if (!token) {
       handleLogout();
     } else {
-      console.log('currentPage', currentPage);
-      getList();
+      console.log('new search', search, sort, order);
+      getList({});
     }
-  }, [currentPage, itemsPerPage]);
+  }, [currentPage, itemsPerPage, search, sort, order]);
 
   return (
     <div>
@@ -117,7 +145,15 @@ const Home = () => {
           <Button onClick={() => navigate('/create-film')}>Create film</Button>
         </div>
       </div>
-      <SearchForm onSearch={getList} />
+      <SearchContext.Provider
+        value={{ search, setSearch, sort, setSort, order, setOrder }}
+      >
+        <SearchForm />
+        <div className="flex gap-2 justify-between">
+          <Filter />
+          <Button onClick={handleResetQueries}>Reset queries</Button>
+        </div>
+      </SearchContext.Provider>
       <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
