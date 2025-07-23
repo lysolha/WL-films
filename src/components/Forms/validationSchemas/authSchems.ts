@@ -3,27 +3,27 @@ import * as Yup from 'yup';
 export const registerSchema = Yup.object({
   name: Yup.string()
     .transform((value) => value.trim())
-    .required('Required'),
+    .required('Name is required'),
   email: Yup.string()
     .transform((value) => value.trim())
     .email('Invalid email')
-    .required('Required'),
+    .required('Email is required'),
   password: Yup.string()
     .transform((value) => value.trim())
-    .required('Required')
-    .min(8, 'Password must be at least 8 characters long'),
+    .required('Password is required')
+    .min(8, 'Password should be at least 8 characters long'),
   confirmPassword: Yup.string()
     .transform((value) => value.trim())
-    .required('Required')
-    .oneOf([Yup.ref('password')], 'Passwords must match'),
+    .required('Confirm password is required')
+    .oneOf([Yup.ref('password')], 'Passwords should be equal'),
 });
 
 export const loginSchema = Yup.object({
   email: Yup.string()
     .transform((value) => value.trim())
     .email('Invalid email')
-    .required('Required'),
+    .required('Email is required'),
   password: Yup.string()
     .transform((value) => value.trim())
-    .required('Required'),
+    .required('Password is required'),
 });

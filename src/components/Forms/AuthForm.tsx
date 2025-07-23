@@ -63,6 +63,7 @@ const AuthForm = ({
             name="confirmPassword"
             label="Confirm Password"
             placeholder="Confirm Password"
+            type={showPassword ? 'text' : 'password'}
             disabled={method === 'login'}
             className={method === 'login' ? 'hidden' : ''}
             icon={<EyeIcon className={`${!showPassword && 'opacity-50'}`} />}
