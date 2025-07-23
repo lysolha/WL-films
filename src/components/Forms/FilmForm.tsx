@@ -15,14 +15,15 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
   const initialValues = {
     id: film?.id || '',
     title: film?.title || '',
-    year: film?.year || 0,
+    year: film?.year || '',
     format: film?.format || 'DVD',
-    actors: film?.actors.map((actor) => actor.name) || [],
+    actors: film?.actors.map((actor) => actor.name) || [''],
   };
 
   const formatOptions = [
     { label: 'DVD', value: 'DVD' },
     { label: 'VHS', value: 'VHS' },
+    { label: 'Blu-Ray', value: 'Blu-Ray' },
   ];
 
   return (
@@ -31,30 +32,35 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
         initialValues={initialValues}
         validationSchema={filmSchema}
         onSubmit={(values) => {
-          onSubmit(values);
+          onSubmit({
+            ...values,
+            year: Number(values.year),
+          });
         }}
       >
         {({ values, dirty, isValid, setFieldValue }) => (
-          <Form className="flex flex-col gap-2">
+          <Form className="flex flex-col gap-4">
             <Input name="title" label="Title" placeholder="Title" />
-            <Input name="year" label="Year" placeholder="Year" type="number" />
+            <Input name="year" label="Year" placeholder="Year" type="text" />
+
             <Select
-              name="format"
+              name="Format"
               value={values.format}
               onChange={(e) => setFieldValue('format', e.target.value)}
               options={formatOptions}
+              label="Format"
             />
             <FieldArray
               name="actors"
               render={({ push, remove }) => (
                 <div>
-                  <h2 className="text-lg font-bold">Actors</h2>
-                  <ul className="flex flex-col gap-2 ml-6">
+                  <h2>Actors</h2>
+                  <ul className="flex flex-col gap-2">
                     {values.actors.map((_, index) => (
-                      <li key={index} className="flex gap-2 items-end">
+                      <li key={index} className="flex gap-2 items-start">
                         <Input
                           name={`actors[${index}]`}
-                          label="Actor"
+                          label=""
                           placeholder="Actor"
                         />
                         <Button type="button" onClick={() => remove(index)}>
@@ -69,10 +75,15 @@ const FilmForm = ({ film, onSubmit }: FilmFormProps) => {
                 </div>
               )}
             />
+            {values.actors.length === 0 && (
+              <p className="text-error text-sm">
+                At least one actor is required
+              </p>
+            )}
 
-            <div className="flex gap-2">
+            <div className="flex gap-2 mt-10">
               <Button type="reset" className="w-full" disabled={!dirty}>
-                reset
+                Reset
               </Button>
               <Button
                 type="submit"
