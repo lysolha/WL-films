@@ -54,12 +54,9 @@ const CreateFilms = () => {
         <h1 className="text-2xl font-bold col-span-2 lg:col-start-1">
           Create film
         </h1>
-        <Button
-          onClick={() => setOpen(true)}
-          className="col-span-1 col-start-3 row-start-1"
-        >
-          Import films
-        </Button>
+        <div className="flex justify-end col-span-1 col-start-3 row-start-1">
+          <Button onClick={() => setOpen(true)}>Import films</Button>
+        </div>
       </div>
       <FilmForm onSubmit={handleCreateFilm} />
       <Dialog open={open} onClose={() => setOpen(false)}>

@@ -1,11 +1,13 @@
-const ArrowIcon = () => {
+import { twMerge } from 'tailwind-merge';
+
+const ArrowIcon = ({ className }: { className?: string }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       width="800px"
       height="800px"
       viewBox="-19.04 0 75.804 75.804"
-      className="w-4 h-4 stroke-cream fill-cream"
+      className={twMerge('w-4 h-4 stroke-cream fill-cream', className)}
     >
       <g
         id="Group_65"

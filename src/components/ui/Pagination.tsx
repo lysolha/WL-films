@@ -65,7 +65,7 @@ const Pagination = ({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 my-6 px-4 py-3 bg-charcoal border border-cream rounded-lg shadow-sm">
+    <div className="grid grid-cols-3 gap-4 my-6 px-4 py-3 bg-charcoal border border-cream rounded-lg shadow-sm">
       <div className="flex items-center gap-2 text-cream">
         <span>Show</span>
         <Select
@@ -76,11 +76,11 @@ const Pagination = ({
         <span>per page</span>
       </div>
 
-      <div>
+      <div className="flex items-center justify-center">
         Showing {startItem}-{endItem} of {totalItems} items
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-1 justify-end">
         <Button
           onClick={handlePrevious}
           disabled={currentPage === 1}

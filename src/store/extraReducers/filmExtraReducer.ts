@@ -86,11 +86,12 @@ export const getAllFilms = createAsyncThunk(
       offset
     );
 
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
     if (response.status === 0) {
       return thunkAPI.rejectWithValue(response.error);
     }
 
-    console.log('extra reducer', response);
     return response;
   }
 );
