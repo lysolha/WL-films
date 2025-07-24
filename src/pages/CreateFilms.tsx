@@ -23,7 +23,7 @@ const CreateFilmsComponent = () => {
   const dispatch = useDispatch<AppDispatch>();
 
   const handleBack = () => {
-    navigate('/dashboard');
+    navigate('/');
   };
 
   const handleCreateFilm = async (film: FormFilm) => {

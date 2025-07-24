@@ -61,11 +61,10 @@ const SearchForm = () => {
           }}
           value={searchPlaceholder}
         />
-        {searchPlaceholder.length < 2 && (
-          <p className="text-sm text-gray-500">
-            Enter at least 2 characters to search
-          </p>
-        )}
+
+        <p className="text-sm text-gray-500">
+          Enter at least 2 characters to search
+        </p>
       </Form>
     </Formik>
   );

@@ -12,9 +12,10 @@ export const router = createBrowserRouter([
     element: <App />,
     children: [
       { path: 'auth', element: <Auth /> },
-      { path: 'dashboard', element: <Home /> },
+      { path: '/', element: <Home /> },
       { path: 'create-film', element: <CreateFilms /> },
       { path: 'film-info/:id', element: <FilmInfo /> },
+      { path: '*', element: <Home /> },
     ],
   },
 ]);

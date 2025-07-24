@@ -3,7 +3,7 @@ import * as Yup from 'yup';
 const filmSchema = Yup.object({
   title: Yup.string()
     .transform((value) => (value ? value.trim() : ''))
-    .max(30, 'Must be 30 characters or less')
+    .max(60, 'Must be 60 characters or less')
     .required('Title is required'),
   year: Yup.number()
     .typeError('Year must be a number between 1900 and 2021')

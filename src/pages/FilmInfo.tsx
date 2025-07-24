@@ -35,10 +35,10 @@ const FilmInfoComponent = () => {
         await dispatch(getFilmById({ id, token })).unwrap();
       } catch (error) {
         toast.error(`Film not found: ${handleApiError(error)}`);
-        navigate('/dashboard');
+        navigate('/');
       }
     } else {
-      navigate('/dashboard');
+      navigate('/');
     }
   }, [dispatch, id, navigate, token]);
 
@@ -46,7 +46,7 @@ const FilmInfoComponent = () => {
     if (!token || !id) return;
     try {
       await dispatch(deleteFilm({ id, token })).unwrap();
-      navigate('/dashboard');
+      navigate('/');
       toast.success('Film deleted successfully');
     } catch (error) {
       toast.error(`Film deleted failed: ${handleApiError(error)}`);
@@ -116,7 +116,7 @@ const FilmInfoComponent = () => {
   return (
     <>
       <div className="flex gap-2 justify-between">
-        <Button onClick={() => navigate('/dashboard')}>Back</Button>
+        <Button onClick={() => navigate('/')}>Back</Button>
         <div className="flex gap-2">
           <Button onClick={handleOpenEditDialog}>Edit</Button>
           <Button onClick={handleOpenDeleteDialog}>

@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { createUser, loginUser } from '../store/extraReducers/userExtraReduсer';
-import type { AppDispatch } from '../store/store';
+import type { AppDispatch, RootState } from '../store/store';
 
 import { toast } from 'react-toastify';
 
@@ -17,6 +17,8 @@ import { handleApiError } from '../store/APIs/errorHandler';
 const Auth = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
+  const { token } = useSelector((state: RootState) => state.user);
 
   const [method, setMethod] = useState<'login' | 'register'>('login');
   const [validationSchema, setValidationSchema] = useState(loginSchema);
@@ -48,7 +50,7 @@ const Auth = () => {
             confirmPassword: values.confirmPassword || '',
           })
         ).unwrap();
-        navigate('/dashboard');
+        navigate('/');
         toast.success('Registered successfully');
       } catch (error) {
         toast.error(
@@ -58,7 +60,7 @@ const Auth = () => {
     } else {
       try {
         await dispatch(loginUser(values)).unwrap();
-        navigate('/dashboard');
+        navigate('/');
         toast.success('Logged in successfully');
       } catch (error) {
         toast.error(
@@ -71,6 +73,12 @@ const Auth = () => {
   useEffect(() => {
     handleMethodChange(method);
   }, [method]);
+
+  useEffect(() => {
+    if (token) {
+      navigate('/');
+    }
+  }, [token, navigate]);
 
   return (
     <div className="flex flex-col items-center justify-center">
