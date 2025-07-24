@@ -1,17 +1,46 @@
-import { useField } from 'formik';
-import { useState, type InputHTMLAttributes } from 'react';
+import { useField, useFormikContext } from 'formik';
+import { useEffect, useRef, useState, type InputHTMLAttributes } from 'react';
 import { twMerge } from 'tailwind-merge';
+
+const useFormReset = (fieldName: string, onReset?: () => void) => {
+  const formik = useFormikContext<Record<string, unknown>>();
+  const prevValuesRef = useRef(formik.values);
+
+  useEffect(() => {
+    const currentValue = formik.values[fieldName];
+    const prevValue = prevValuesRef.current[fieldName];
+
+    if (
+      prevValue &&
+      !currentValue &&
+      formik.initialValues[fieldName] === currentValue
+    ) {
+      onReset?.();
+    }
+
+    prevValuesRef.current = formik.values;
+  }, [formik.values, formik.initialValues, fieldName, onReset]);
+};
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   icon?: React.ReactNode;
   onClick?: () => void;
   className?: string;
+  onReset?: () => void;
 }
 
-const Input = ({ label, icon, onClick, ...props }: InputProps) => {
+const Input = ({ label, icon, onClick, onReset, ...props }: InputProps) => {
   const [field, meta, helpers] = useField(props);
   const [inputValue, setInputValue] = useState(field.value);
+
+  useFormReset(props.name as string, onReset);
+
+  useEffect(() => {
+    if (field.value !== inputValue) {
+      setInputValue(field.value);
+    }
+  }, [field.value]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value.length === 1 && e.target.value === ' ') {
