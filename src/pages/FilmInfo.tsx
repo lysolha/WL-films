@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import FilmForm from '../components/Forms/FilmForm';
 import Button from '../components/ui/Button';
+import Confirmation from '../components/ui/Confirmation';
 import Dialog from '../components/ui/dialog';
 import DeleteIcon from '../components/ui/icons/DeleteIcon';
 import PlayIcon from '../components/ui/icons/PlayIcon';
@@ -17,6 +18,8 @@ import {
 import type { AppDispatch, RootState } from '../store/store';
 import type { FormFilm } from '../types/Film';
 
+type DialogType = 'edit' | 'delete' | null;
+
 const FilmInfo = () => {
   const { id } = useParams();
   const { token } = useSelector((state: RootState) => state.user);
@@ -24,6 +27,7 @@ const FilmInfo = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
+  const [dialogType, setDialogType] = useState<DialogType>(null);
 
   const showFilmById = async () => {
     if (token && id) {
@@ -46,7 +50,7 @@ const FilmInfo = () => {
       dispatch(getAllFilms({ token }));
       toast.success('Film deleted successfully');
     } catch (error) {
-      toast.error(`Film deleted failed: ${error}`);
+      toast.error(`Film deleted failed: ${handleApiError(error)}`);
     }
   };
 
@@ -55,10 +59,54 @@ const FilmInfo = () => {
     try {
       await dispatch(updateFilm({ film, token, id })).unwrap();
       setOpen(false);
+      setDialogType(null);
       showFilmById();
       toast.success('Film updated successfully');
     } catch (error) {
-      toast.error(`Film updated failed: ${error}`);
+      toast.error(`Film updated failed: ${handleApiError(error)}`);
+    }
+  };
+
+  const handleOpenEditDialog = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setDialogType('edit');
+    setOpen(true);
+  };
+
+  const handleOpenDeleteDialog = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    setDialogType('delete');
+    setOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpen(false);
+    setDialogType(null);
+  };
+
+  const handleConfirmDelete = () => {
+    if (film?.id) {
+      handleDeleteFilm(film.id);
+    }
+    handleCloseDialog();
+  };
+
+  const displayDialogContent = () => {
+    switch (dialogType) {
+      case 'edit':
+        return film ? (
+          <FilmForm onSubmit={handleUpdateFilm} film={film} />
+        ) : null;
+      case 'delete':
+        return (
+          <Confirmation
+            onConfirm={handleConfirmDelete}
+            onCancel={handleCloseDialog}
+            content="Are you sure you want to delete this film?"
+          />
+        );
+      default:
+        return null;
     }
   };
 
@@ -71,8 +119,8 @@ const FilmInfo = () => {
       <div className="flex gap-2 justify-between">
         <Button onClick={() => navigate('/dashboard')}>Back</Button>
         <div className="flex gap-2">
-          <Button onClick={() => setOpen(true)}>Edit</Button>
-          <Button onClick={() => handleDeleteFilm(film?.id || '')}>
+          <Button onClick={handleOpenEditDialog}>Edit</Button>
+          <Button onClick={handleOpenDeleteDialog}>
             <DeleteIcon />
           </Button>
         </div>
@@ -103,9 +151,9 @@ const FilmInfo = () => {
           <PlayIcon />
         </div>
 
-        {film && open && (
-          <Dialog open={open} onClose={() => setOpen(false)}>
-            <FilmForm onSubmit={handleUpdateFilm} film={film} />
+        {open && (
+          <Dialog open={open} onClose={handleCloseDialog}>
+            {displayDialogContent()}
           </Dialog>
         )}
       </div>
