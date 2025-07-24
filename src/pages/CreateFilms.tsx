@@ -6,6 +6,7 @@ import FilmForm from '../components/Forms/FilmForm';
 import ImportForm from '../components/Forms/ImportForm';
 import Button from '../components/ui/Button';
 import Dialog from '../components/ui/dialog';
+import { handleApiError } from '../store/APIs/errorHandler';
 import {
   createFilm,
   importFilms,
@@ -15,6 +16,7 @@ import type { FormFilm } from '../types/Film';
 
 const CreateFilms = () => {
   const [open, setOpen] = useState(false);
+  const [formKey, setFormKey] = useState(Date.now());
   const navigate = useNavigate();
   const { token } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch<AppDispatch>();
@@ -26,22 +28,22 @@ const CreateFilms = () => {
   const handleCreateFilm = async (film: FormFilm) => {
     if (!token) return;
     try {
-      await dispatch(createFilm({ film, token }));
+      await dispatch(createFilm({ film, token })).unwrap();
       handleBack();
       toast.success('Film created successfully');
     } catch (error) {
-      toast.error(`Film created failed: ${error}`);
+      toast.error(`Film created failed: ${handleApiError(error)}`);
     }
   };
 
   const handleImportFilms = async (file: File | null) => {
     if (!token || !file) return;
     try {
-      await dispatch(importFilms({ file, token }));
+      await dispatch(importFilms({ file, token })).unwrap();
       handleBack();
       toast.success('Films imported successfully');
     } catch (error) {
-      toast.error(`Films imported failed: ${error}`);
+      toast.error(`Films imported failed: ${handleApiError(error)}`);
     }
   };
 
@@ -59,8 +61,14 @@ const CreateFilms = () => {
         </div>
       </div>
       <FilmForm onSubmit={handleCreateFilm} />
-      <Dialog open={open} onClose={() => setOpen(false)}>
-        <ImportForm handleImportFilms={handleImportFilms} />
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+          setFormKey(Date.now());
+        }}
+      >
+        <ImportForm key={formKey} handleImportFilms={handleImportFilms} />
       </Dialog>
     </div>
   );

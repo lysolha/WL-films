@@ -45,10 +45,14 @@ const ImportForm = ({
           handleImportFilms(values.file);
         }}
       >
-        {({ dirty }) => (
+        {({ dirty, isValid }) => (
           <Form className="flex flex-col gap-2 h-full justify-between flex-grow">
             <FileDragAndDropField name="file" />
-            <Button type="submit" className="mt-auto w-full" disabled={!dirty}>
+            <Button
+              type="submit"
+              className="mt-auto w-full"
+              disabled={!dirty || !isValid}
+            >
               Import
             </Button>
           </Form>

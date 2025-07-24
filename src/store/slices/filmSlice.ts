@@ -43,7 +43,7 @@ const filmSlice = createSlice({
     },
     setItemsPerPage: (state, action) => {
       state.itemsPerPage = action.payload;
-      state.currentPage = 1; // Reset to first page when changing items per page
+      state.currentPage = 1;
     },
   },
   extraReducers: (builder) => {
@@ -57,7 +57,7 @@ const filmSlice = createSlice({
       })
       .addCase(getFilmById.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.film = action.payload;
+        state.film = (action.payload as { data: Film }).data;
       })
       .addCase(getAllFilms.pending, (state) => {
         state.isLoading = true;
@@ -67,8 +67,10 @@ const filmSlice = createSlice({
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(getAllFilms.fulfilled, (state, action) => {
-        state.allFilms = action.payload.data;
-        state.totalItems = action.payload.meta.total;
+        state.allFilms = (action.payload as { data: Film[] }).data;
+        state.totalItems = (
+          action.payload as { meta: { total: number } }
+        ).meta.total;
         state.totalPages = Math.ceil(state.totalItems / state.itemsPerPage);
         state.isLoading = false;
 
@@ -84,7 +86,7 @@ const filmSlice = createSlice({
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(createFilm.fulfilled, (state, action) => {
-        state.allFilms.push(action.payload);
+        state.allFilms.push(action.payload as Film);
         state.isLoading = false;
       })
       .addCase(deleteFilm.pending, (state) => {
@@ -96,7 +98,7 @@ const filmSlice = createSlice({
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {
         state.allFilms = state.allFilms.filter(
-          (film) => film.id !== action.payload.id
+          (film) => film.id !== (action.payload as Film).id
         );
         state.isLoading = false;
       })
@@ -109,7 +111,7 @@ const filmSlice = createSlice({
       })
       .addCase(updateFilm.fulfilled, (state, action) => {
         state.allFilms = state.allFilms.map((film) =>
-          film.id === action.payload.id ? action.payload : film
+          film.id === (action.payload as Film).id ? action.payload : film
         );
         state.isLoading = false;
       })
@@ -121,7 +123,8 @@ const filmSlice = createSlice({
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(importFilms.fulfilled, (state, action) => {
-        state.allFilms = action.payload;
+        console.log('importFilms.fulfilled', action);
+        state.allFilms = (action.payload as { data: Film[] }).data;
         state.isLoading = false;
       });
   },
