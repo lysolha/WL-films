@@ -19,6 +19,9 @@ const errorCodeMessages: Record<string, Record<string, string>> = {
   'movies/size': {
     NOT_POSITIVE_INTEGER: 'Loaded file is empty. Please load another file.',
   },
+  'data/email': {
+    WRONG_EMAIL: 'Please enter a valid email address. example@example.com',
+  },
 };
 
 export const getErrorMessage = (

@@ -6,6 +6,7 @@ const filmSchema = Yup.object({
     .max(30, 'Must be 30 characters or less')
     .required('Title is required'),
   year: Yup.number()
+    .typeError('Year must be a number between 1900 and 2021')
     .min(1900, 'Must be greater than 1900')
     .max(2021, 'Must be less than 2021')
     .required('Year is required'),

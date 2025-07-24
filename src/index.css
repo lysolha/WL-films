@@ -27,7 +27,7 @@ select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
-  padding-right: 20px;
+  padding-right: 30px;
 }
 
 ::-webkit-scrollbar {

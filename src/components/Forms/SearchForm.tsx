@@ -32,7 +32,7 @@ const SearchForm = () => {
         } else if (value.length === 0) {
           setSearch('');
         }
-      }, 1000);
+      }, 300);
     },
     [setSearch]
   );
@@ -63,7 +63,7 @@ const SearchForm = () => {
         />
         {searchPlaceholder.length < 2 && (
           <p className="text-sm text-gray-500">
-            enter at least 2 characters to search
+            Enter at least 2 characters to search
           </p>
         )}
       </Form>

@@ -30,7 +30,7 @@ const usersSlice = createSlice({
         state.error = null;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload as string;
         state.status = 'succeeded';
         localStorage.setItem('session', action.payload as string);
       })
@@ -43,7 +43,7 @@ const usersSlice = createSlice({
         state.error = null;
       })
       .addCase(createUser.fulfilled, (state, action) => {
-        state.token = action.payload;
+        state.token = action.payload as string;
         state.status = 'succeeded';
       })
       .addCase(createUser.rejected, (state, action) => {
