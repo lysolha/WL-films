@@ -21,6 +21,7 @@ import { toast } from 'react-toastify';
 import FilmList from '../components/Film/List';
 import Filter from '../components/Filter';
 import SearchForm from '../components/Forms/SearchForm';
+import withAuth from '../components/WithAuth';
 import Button from '../components/ui/Button';
 import Confirmation from '../components/ui/Confirmation';
 import Pagination from '../components/ui/Pagination';
@@ -40,7 +41,7 @@ export const SearchContext = createContext<SearchContextType | undefined>(
   undefined
 );
 
-const Home = () => {
+const HomeComponent = () => {
   const { token } = useSelector((state: RootState) => state.user);
   const {
     allFilms,
@@ -148,14 +149,8 @@ const Home = () => {
   };
 
   useEffect(() => {
-    if (!token) {
-      handleLogout();
-    } else {
-      getList({});
-    }
+    getList({});
   }, [getList, handleLogout, token]);
-
-  console.log('requestState', requestState);
 
   return (
     <div>
@@ -208,4 +203,5 @@ const Home = () => {
   );
 };
 
+const Home = withAuth(HomeComponent);
 export default Home;

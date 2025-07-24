@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -8,10 +8,10 @@ import Confirmation from '../components/ui/Confirmation';
 import Dialog from '../components/ui/dialog';
 import DeleteIcon from '../components/ui/icons/DeleteIcon';
 import PlayIcon from '../components/ui/icons/PlayIcon';
+import withAuth from '../components/WithAuth';
 import { handleApiError } from '../store/APIs/errorHandler';
 import {
   deleteFilm,
-  getAllFilms,
   getFilmById,
   updateFilm,
 } from '../store/extraReducers/filmExtraReducer';
@@ -20,7 +20,7 @@ import type { FormFilm } from '../types/Film';
 
 type DialogType = 'edit' | 'delete' | null;
 
-const FilmInfo = () => {
+const FilmInfoComponent = () => {
   const { id } = useParams();
   const { token } = useSelector((state: RootState) => state.user);
   const { film } = useSelector((state: RootState) => state.film);
@@ -29,7 +29,7 @@ const FilmInfo = () => {
   const [open, setOpen] = useState(false);
   const [dialogType, setDialogType] = useState<DialogType>(null);
 
-  const showFilmById = async () => {
+  const showFilmById = useCallback(async () => {
     if (token && id) {
       try {
         await dispatch(getFilmById({ id, token })).unwrap();
@@ -38,16 +38,15 @@ const FilmInfo = () => {
         navigate('/dashboard');
       }
     } else {
-      navigate('/auth');
+      navigate('/dashboard');
     }
-  };
+  }, [dispatch, id, navigate, token]);
 
   const handleDeleteFilm = async (id: string) => {
     if (!token || !id) return;
     try {
       await dispatch(deleteFilm({ id, token })).unwrap();
       navigate('/dashboard');
-      dispatch(getAllFilms({ token }));
       toast.success('Film deleted successfully');
     } catch (error) {
       toast.error(`Film deleted failed: ${handleApiError(error)}`);
@@ -112,7 +111,7 @@ const FilmInfo = () => {
 
   useEffect(() => {
     showFilmById();
-  }, []);
+  }, [showFilmById]);
 
   return (
     <>
@@ -161,4 +160,5 @@ const FilmInfo = () => {
   );
 };
 
+const FilmInfo = withAuth(FilmInfoComponent);
 export default FilmInfo;

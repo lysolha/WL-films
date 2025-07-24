@@ -6,6 +6,7 @@ import FilmForm from '../components/Forms/FilmForm';
 import ImportForm from '../components/Forms/ImportForm';
 import Button from '../components/ui/Button';
 import Dialog from '../components/ui/dialog';
+import withAuth from '../components/WithAuth';
 import { handleApiError } from '../store/APIs/errorHandler';
 import {
   createFilm,
@@ -14,7 +15,7 @@ import {
 import type { AppDispatch, RootState } from '../store/store';
 import type { FormFilm } from '../types/Film';
 
-const CreateFilms = () => {
+const CreateFilmsComponent = () => {
   const [open, setOpen] = useState(false);
   const [formKey, setFormKey] = useState(Date.now());
   const navigate = useNavigate();
@@ -74,4 +75,5 @@ const CreateFilms = () => {
   );
 };
 
+const CreateFilms = withAuth(CreateFilmsComponent);
 export default CreateFilms;
