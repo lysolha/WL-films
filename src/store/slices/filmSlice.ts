@@ -12,23 +12,23 @@ import {
 interface FilmState {
   allFilms: Film[];
   film: Film | null;
-  isLoading: boolean;
   error: string | null;
   currentPage: number;
   totalPages: number;
   totalItems: number;
   itemsPerPage: number;
+  requestState: 'idle' | 'loading' | 'success' | 'error';
 }
 
 const initialState: FilmState = {
   allFilms: [],
   film: null,
-  isLoading: false,
   error: null,
   currentPage: 1,
   totalPages: 0,
   totalItems: 0,
   itemsPerPage: 9,
+  requestState: 'idle',
 };
 
 const filmSlice = createSlice({
@@ -49,21 +49,21 @@ const filmSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFilmById.pending, (state) => {
-        state.isLoading = true;
+        state.requestState = 'loading';
       })
       .addCase(getFilmById.rejected, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'error';
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(getFilmById.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'success';
         state.film = (action.payload as { data: Film }).data;
       })
       .addCase(getAllFilms.pending, (state) => {
-        state.isLoading = true;
+        state.requestState = 'loading';
       })
       .addCase(getAllFilms.rejected, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'error';
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(getAllFilms.fulfilled, (state, action) => {
@@ -72,60 +72,61 @@ const filmSlice = createSlice({
           action.payload as { meta: { total: number } }
         ).meta.total;
         state.totalPages = Math.ceil(state.totalItems / state.itemsPerPage);
-        state.isLoading = false;
+        state.requestState = 'success';
 
         if (state.totalPages < state.currentPage) {
           state.currentPage = 1;
         }
       })
       .addCase(createFilm.pending, (state) => {
-        state.isLoading = true;
+        state.requestState = 'loading';
       })
       .addCase(createFilm.rejected, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'error';
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(createFilm.fulfilled, (state, action) => {
         state.allFilms.push(action.payload as Film);
-        state.isLoading = false;
+        state.requestState = 'success';
       })
       .addCase(deleteFilm.pending, (state) => {
-        state.isLoading = true;
+        state.requestState = 'loading';
       })
       .addCase(deleteFilm.rejected, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'error';
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(deleteFilm.fulfilled, (state, action) => {
         state.allFilms = state.allFilms.filter(
           (film) => film.id !== (action.payload as Film).id
         );
-        state.isLoading = false;
+        state.requestState = 'success';
       })
       .addCase(updateFilm.pending, (state) => {
-        state.isLoading = true;
+        state.requestState = 'loading';
       })
       .addCase(updateFilm.rejected, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'error';
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(updateFilm.fulfilled, (state, action) => {
         state.allFilms = state.allFilms.map((film) =>
-          film.id === (action.payload as Film).id ? action.payload : film
+          film.id === (action.payload as Film).id
+            ? (action.payload as Film)
+            : film
         );
-        state.isLoading = false;
+        state.requestState = 'success';
       })
       .addCase(importFilms.pending, (state) => {
-        state.isLoading = true;
+        state.requestState = 'loading';
       })
       .addCase(importFilms.rejected, (state, action) => {
-        state.isLoading = false;
+        state.requestState = 'error';
         state.error = action.error.message || 'An error occurred';
       })
       .addCase(importFilms.fulfilled, (state, action) => {
-        console.log('importFilms.fulfilled', action);
         state.allFilms = (action.payload as { data: Film[] }).data;
-        state.isLoading = false;
+        state.requestState = 'success';
       });
   },
 });

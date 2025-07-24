@@ -1,4 +1,10 @@
-import { createContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
@@ -38,7 +44,7 @@ const Home = () => {
   const { token } = useSelector((state: RootState) => state.user);
   const {
     allFilms,
-    isLoading,
+    requestState,
     currentPage,
     totalPages,
     totalItems,
@@ -53,40 +59,51 @@ const Home = () => {
   const [sort, setSort] = useState<string>('');
   const [order, setOrder] = useState<string>('');
 
-  const handleLogout = () => {
+  const emptyList = useMemo(() => {
+    return (
+      allFilms.length === 0 &&
+      requestState !== 'idle' &&
+      requestState !== 'loading'
+    );
+  }, [allFilms, requestState]);
+
+  const handleLogout = useCallback(() => {
     dispatch(logout());
     localStorage.removeItem('session');
     navigate('/auth');
-  };
+  }, [dispatch, navigate]);
 
-  const getList = async ({
-    page = currentPage,
-    querySearch = search,
-    querySort = sort,
-    queryOrder = order,
-  }: {
-    page?: number;
-    querySearch?: string;
-    querySort?: string;
-    queryOrder?: string;
-  }) => {
-    if (!token) return;
-    try {
-      const offset = (page - 1) * itemsPerPage;
-      await dispatch(
-        getAllFilms({
-          token,
-          search: querySearch,
-          sort: querySort,
-          order: queryOrder,
-          limit: itemsPerPage,
-          offset,
-        })
-      ).unwrap();
-    } catch (error) {
-      toast.error((error as { code?: string }).code || 'Failed to get films');
-    }
-  };
+  const getList = useCallback(
+    async ({
+      page = 1,
+      querySearch = search,
+      querySort = sort,
+      queryOrder = order,
+    }: {
+      page?: number;
+      querySearch?: string;
+      querySort?: string;
+      queryOrder?: string;
+    }) => {
+      if (!token) return;
+      try {
+        const offset = (page - 1) * itemsPerPage;
+        await dispatch(
+          getAllFilms({
+            token,
+            search: querySearch,
+            sort: querySort,
+            order: queryOrder,
+            limit: itemsPerPage,
+            offset,
+          })
+        ).unwrap();
+      } catch (error) {
+        toast.error((error as { code?: string }).code || 'Failed to get films');
+      }
+    },
+    [dispatch, itemsPerPage, order, search, sort, token]
+  );
 
   const handleDeleteAllFilms = async () => {
     if (!token) return;
@@ -107,10 +124,13 @@ const Home = () => {
     }
   };
 
-  const handlePageChange = (page: number) => {
-    dispatch(setCurrentPage(page));
-    getList({ page });
-  };
+  const handlePageChange = useCallback(
+    (page: number) => {
+      dispatch(setCurrentPage(page));
+      getList({ page });
+    },
+    [dispatch, getList]
+  );
 
   const handleItemsPerPageChange = (newItemsPerPage: number) => {
     dispatch(setItemsPerPage(newItemsPerPage));
@@ -133,7 +153,9 @@ const Home = () => {
     } else {
       getList({});
     }
-  }, [currentPage, itemsPerPage, search, sort, order]);
+  }, [getList, handleLogout, token]);
+
+  console.log('requestState', requestState);
 
   return (
     <div>
@@ -166,7 +188,14 @@ const Home = () => {
         totalItems={totalItems}
         onItemsPerPageChange={handleItemsPerPageChange}
       />
-      <FilmList allFilms={allFilms} isLoading={isLoading} />
+      {emptyList && (
+        <div className="text-center w-full text-cream text-2xl font-bold  p-4 col-span-3 underline underline-offset-4">
+          No films found
+        </div>
+      )}
+      {allFilms.length > 0 && (
+        <FilmList allFilms={allFilms} isLoading={requestState === 'loading'} />
+      )}
 
       <Dialog open={open} onClose={() => setOpen(false)}>
         <Confirmation
