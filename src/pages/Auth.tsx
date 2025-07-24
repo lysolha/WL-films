@@ -52,10 +52,7 @@ const Auth = () => {
         toast.success('Registered successfully');
       } catch (error) {
         toast.error(
-          <div className="flex flex-col">
-            <span>Registration failed.</span>
-            {handleApiError(error)}
-          </div>
+          <div className="flex flex-col">{handleApiError(error)}</div>
         );
       }
     } else {
@@ -65,10 +62,7 @@ const Auth = () => {
         toast.success('Logged in successfully');
       } catch (error) {
         toast.error(
-          <div className="flex flex-col">
-            <span>Login failed.</span>
-            {handleApiError(error)}
-          </div>
+          <div className="flex flex-col">{handleApiError(error)}</div>
         );
       }
     }

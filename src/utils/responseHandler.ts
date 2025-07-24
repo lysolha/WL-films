@@ -18,5 +18,5 @@ export const responseHandler = (
     return thunkAPI.rejectWithValue(response);
   }
 
-  return response.token || response.data;
+  return response.token || response;
 };

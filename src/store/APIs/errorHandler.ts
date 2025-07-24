@@ -1,18 +1,36 @@
 import type { errorResponse } from '../../types/requestResults';
 
-const errorCodeMessages: Record<string, string> = {
-  AUTHENTICATION_FAILED: 'Invalid email address or password.',
-  EMAIL_ALREADY_EXISTS: 'This email is already registered.',
-  NOT_UNIQUE: 'This email is already registered.',
-  REQUIRED: 'This field is required. Please fill in all fields.',
+const errorCodeMessages: Record<string, Record<string, string>> = {
+  title: {
+    NOT_UNIQUE: 'This title is already taken.',
+  },
+  year: {
+    NOT_UNIQUE: 'This year is already taken.',
+  },
+  format: {
+    NOT_UNIQUE: 'This format is already taken.',
+  },
+  email: {
+    NOT_UNIQUE: 'This email is already registered.',
+  },
+  password: {
+    NOT_UNIQUE: 'This password is already taken.',
+  },
+  'movies/size': {
+    NOT_POSITIVE_INTEGER: 'Loaded file is empty. Please load another file.',
+  },
 };
 
-export const getErrorMessage = (code: string, field?: string): string => {
-  const message = errorCodeMessages[code];
+export const getErrorMessage = (
+  code: string,
+  field?: string,
+  fieldValue?: string
+): string => {
+  if (field && fieldValue && errorCodeMessages[field]?.[fieldValue]) {
+    return errorCodeMessages[field][fieldValue || ''];
+  }
 
-  if (message) return message;
-
-  return field ? `${field}: ${code}` : `Unknown error: ${code}`;
+  return field ? `${field}: ${fieldValue}` : `Unknown error: ${code}`;
 };
 
 export const handleApiError = (error: unknown): string => {
@@ -25,10 +43,11 @@ export const handleApiError = (error: unknown): string => {
     const apiError = error as errorResponse;
 
     if (apiError.error.fields) {
-      const firstField = Object.keys(apiError.error.fields)[0];
-      const messageCode =
-        apiError.error.fields[firstField as keyof typeof apiError.error.fields];
-      return getErrorMessage(messageCode, firstField);
+      const errorMessages = Object.entries(apiError.error.fields).map(
+        ([fieldName, fieldValue]) =>
+          getErrorMessage(apiError.error.code, fieldName, fieldValue)
+      );
+      return errorMessages.join('\n');
     }
 
     if (apiError.error.code) {

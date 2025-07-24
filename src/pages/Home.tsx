@@ -19,6 +19,7 @@ import Button from '../components/ui/Button';
 import Confirmation from '../components/ui/Confirmation';
 import Pagination from '../components/ui/Pagination';
 import Dialog from '../components/ui/dialog';
+import { handleApiError } from '../store/APIs/errorHandler';
 import type { Film } from '../types/Film';
 
 interface SearchContextType {
@@ -81,7 +82,7 @@ const Home = () => {
           limit: itemsPerPage,
           offset,
         })
-      );
+      ).unwrap();
     } catch (error) {
       toast.error((error as { code?: string }).code || 'Failed to get films');
     }
@@ -90,15 +91,19 @@ const Home = () => {
   const handleDeleteAllFilms = async () => {
     if (!token) return;
     try {
-      const response = await dispatch(getAllFilms({ token })).unwrap();
+      const response = (await dispatch(getAllFilms({ token })).unwrap()) as {
+        data: Film[];
+      };
       const films = response.data;
       await Promise.all(
-        films.map((film: Film) => dispatch(deleteFilm({ id: film.id, token })))
+        films.map((film: Film) =>
+          dispatch(deleteFilm({ id: film.id, token })).unwrap()
+        )
       );
       toast.success('All films deleted successfully');
       getList({});
     } catch (error) {
-      toast.error(`All films deleted failed: ${error}`);
+      toast.error(`All films deleted failed: ${handleApiError(error)}`);
     }
   };
 
@@ -126,7 +131,6 @@ const Home = () => {
     if (!token) {
       handleLogout();
     } else {
-      console.log('new search', search, sort, order);
       getList({});
     }
   }, [currentPage, itemsPerPage, search, sort, order]);

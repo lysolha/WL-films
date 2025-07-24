@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import type { FormFilm } from '../../types/Film';
+import { responseHandler } from '../../utils/responseHandler';
 import * as FilmAPI from '../APIs/filmAPI';
 
 export const getFilmById = createAsyncThunk(
@@ -7,11 +8,7 @@ export const getFilmById = createAsyncThunk(
   async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     const response = await FilmAPI.getFilmById(id, token);
 
-    if (response.status === 0) {
-      return thunkAPI.rejectWithValue(response.error);
-    }
-
-    return response.data;
+    return responseHandler(response, thunkAPI);
   }
 );
 
@@ -20,11 +17,7 @@ export const createFilm = createAsyncThunk(
   async ({ film, token }: { film: FormFilm; token: string }, thunkAPI) => {
     const response = await FilmAPI.createFilm(film, token);
 
-    if (response.status === 0) {
-      return thunkAPI.rejectWithValue(response.error);
-    }
-
-    return response.data;
+    return responseHandler(response, thunkAPI);
   }
 );
 
@@ -33,11 +26,7 @@ export const deleteFilm = createAsyncThunk(
   async ({ id, token }: { id: string; token: string }, thunkAPI) => {
     const response = await FilmAPI.deleteFilm(id, token);
 
-    if (response.status === 0) {
-      return thunkAPI.rejectWithValue(response.error);
-    }
-
-    return response;
+    return responseHandler(response, thunkAPI);
   }
 );
 
@@ -49,11 +38,7 @@ export const updateFilm = createAsyncThunk(
   ) => {
     const response = await FilmAPI.updateFilm(film, token, id);
 
-    if (response.status === 0) {
-      return thunkAPI.rejectWithValue(response.error);
-    }
-
-    return response.data;
+    return responseHandler(response, thunkAPI);
   }
 );
 
@@ -85,14 +70,9 @@ export const getAllFilms = createAsyncThunk(
       limit,
       offset
     );
-
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    if (response.status === 0) {
-      return thunkAPI.rejectWithValue(response.error);
-    }
-
-    return response;
+    return responseHandler(response, thunkAPI);
   }
 );
 
@@ -101,10 +81,6 @@ export const importFilms = createAsyncThunk(
   async ({ file, token }: { file: File; token: string }, thunkAPI) => {
     const response = await FilmAPI.importFilms(file, token);
 
-    if (response.status === 0) {
-      return thunkAPI.rejectWithValue(response.error);
-    }
-
-    return response.data;
+    return responseHandler(response, thunkAPI);
   }
 );

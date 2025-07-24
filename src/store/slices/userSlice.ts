@@ -32,7 +32,7 @@ const usersSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.token = action.payload;
         state.status = 'succeeded';
-        localStorage.setItem('session', action.payload);
+        localStorage.setItem('session', action.payload as string);
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.status = 'failed';
