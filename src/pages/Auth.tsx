@@ -12,6 +12,7 @@ import {
   loginSchema,
   registerSchema,
 } from '../components/Forms/validationSchemas/authSchems';
+import { handleApiError } from '../store/APIs/errorHandler';
 
 const Auth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -50,7 +51,12 @@ const Auth = () => {
         navigate('/dashboard');
         toast.success('Registered successfully');
       } catch (error) {
-        toast.error((error as { code?: string }).code || 'Registration failed');
+        toast.error(
+          <div className="flex flex-col">
+            <span>Registration failed.</span>
+            {handleApiError(error)}
+          </div>
+        );
       }
     } else {
       try {
@@ -58,7 +64,12 @@ const Auth = () => {
         navigate('/dashboard');
         toast.success('Logged in successfully');
       } catch (error) {
-        toast.error((error as { code?: string }).code || 'Login failed');
+        toast.error(
+          <div className="flex flex-col">
+            <span>Login failed.</span>
+            {handleApiError(error)}
+          </div>
+        );
       }
     }
   };

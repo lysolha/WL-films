@@ -25,7 +25,6 @@ const usersSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // login
       .addCase(loginUser.pending, (state) => {
         state.status = 'loading';
         state.error = null;
@@ -39,7 +38,6 @@ const usersSlice = createSlice({
         state.status = 'failed';
         state.error = action.payload as string;
       })
-      // create user
       .addCase(createUser.pending, (state) => {
         state.status = 'loading';
         state.error = null;
