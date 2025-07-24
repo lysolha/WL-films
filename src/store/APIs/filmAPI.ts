@@ -43,14 +43,12 @@ export const getAllFilms = async (
   }
 
   const query = queryParams.toString() ? `?${queryParams.toString()}` : '';
-  console.log('query', query);
   const response = await fetch(`${API_URL}/movies${query}`, {
     headers: {
       Authorization: `${token}`,
     },
   });
   const data = await response.json();
-  console.log('all films', data);
   return data;
 };
 
@@ -88,7 +86,6 @@ export const deleteFilm = async (id: string, token: string) => {
     },
   });
   const data = await response.json();
-  console.log('data', data);
   return data;
 };
 

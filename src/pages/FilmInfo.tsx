@@ -7,6 +7,7 @@ import Button from '../components/ui/Button';
 import Dialog from '../components/ui/dialog';
 import DeleteIcon from '../components/ui/icons/DeleteIcon';
 import PlayIcon from '../components/ui/icons/PlayIcon';
+import { handleApiError } from '../store/APIs/errorHandler';
 import {
   deleteFilm,
   getAllFilms,
@@ -27,10 +28,9 @@ const FilmInfo = () => {
   const showFilmById = async () => {
     if (token && id) {
       try {
-        const response = await dispatch(getFilmById({ id, token })).unwrap();
-        console.log(response);
+        await dispatch(getFilmById({ id, token })).unwrap();
       } catch (error) {
-        console.error(error);
+        toast.error(`Film not found: ${handleApiError(error)}`);
         navigate('/dashboard');
       }
     } else {
