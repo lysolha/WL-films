@@ -28,6 +28,7 @@ import Pagination from '../components/ui/Pagination';
 import Dialog from '../components/ui/dialog';
 import { handleApiError } from '../store/APIs/errorHandler';
 import type { Film } from '../types/Film';
+import type { errorResponse } from '../types/requestResults';
 
 interface SearchContextType {
   search: string;
@@ -99,11 +100,17 @@ const HomeComponent = () => {
             offset,
           })
         ).unwrap();
-      } catch (error) {
-        toast.error((error as { code?: string }).code || 'Failed to get films');
+      } catch (error: unknown) {
+        const errorResponse = error as errorResponse;
+        if (errorResponse?.error?.code === 'WRONG_TOKEN') {
+          handleLogout();
+          toast.error('Your session is expired, please login again');
+          return;
+        }
+        toast.error(handleApiError(error));
       }
     },
-    [dispatch, itemsPerPage, order, search, sort, token]
+    [dispatch, itemsPerPage, order, search, sort, token, handleLogout]
   );
 
   const handleDeleteAllFilms = async () => {
